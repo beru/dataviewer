@@ -48,7 +48,12 @@ Dummy d;
 
 size_t DataSetting1D::GetTotalBytes() const
 {
-	return typeSizeMap[dataType] * (int) EvalFormula(countFormula);
+	return GetElementSize() * (int) EvalFormula(countFormula);
+}
+
+size_t DataSetting1D::GetElementSize() const
+{
+	return typeSizeMap[dataType];
 }
 
 const std::type_info& DataSetting1D::GetTypeInfo() const

@@ -42,6 +42,7 @@ struct DataSetting1D : public IDataSetting
 	CString		viewMaxFormula;
 
 	size_t GetTotalBytes() const;
+	size_t GetElementSize() const;
 	int GetAddressOffset() const { return 0; }
 };
 
