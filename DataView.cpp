@@ -265,7 +265,7 @@ void CDataView::Render1D(CPaintDC& dc)
 	}
 	const std::vector<double>& values = m_values;
 	const DataSetting1D& dataSetting = dynamic_cast<DataSetting1D&>(*m_pSetting->pDataSetting);
-	size_t dataCount = dataSetting.GetTotalBytes() / sizeof(double);
+	size_t dataCount = dataSetting.GetTotalBytes() / dataSetting.GetElementSize();
 	
 	double min = 0;
 	double max = 0;
