@@ -46,9 +46,9 @@ template <typename T>
 ColorB8G8R8A8 convert(ColorB5G6R5 from)
 {
 	ColorB8G8R8A8 to;
-	to.r.value = from.r << 2;
-	to.g.value = from.g << 3;
-	to.b.value = from.b << 2;
+	to.r.value = from.r << 3;
+	to.g.value = from.g << 2;
+	to.b.value = from.b << 3;
 	return to;
 }
 
