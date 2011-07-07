@@ -25,6 +25,33 @@ typedef gl::Color1<Fixed8> ColorFixed8;
 typedef gl::Color1<Fixed16> ColorFixed16;
 typedef gl::Color1<Fixed32> ColorFixed32;
 
+#define STATIC_ASSERT(expr) { char dummy[(expr) ? 1 : 0]; }
+
+template <typename T, typename T2>
+T convert(T2 v)
+{
+	return T(v);
+}
+
+#pragma pack(push, 1 )
+struct ColorB5G6R5
+{
+	uint16_t b : 5;
+	uint16_t g : 6;
+	uint16_t r : 5;
+};
+#pragma pack(pop)
+
+template <typename T>
+ColorB8G8R8A8 convert(ColorB5G6R5 from)
+{
+	ColorB8G8R8A8 to;
+	to.r.value = from.r << 2;
+	to.g.value = from.g << 3;
+	to.b.value = from.b << 2;
+	return to;
+}
+
 gl::ColorConverter<ColorB8G8R8A8> colorConverter;
 
 #include "MathUtil.h"
@@ -167,6 +194,9 @@ void CDataView::ProcessAs2D()
 
 	size_t lineBytes = 0;
 	switch (setting.colorFormat) {
+	case DataSetting2D::ColorFormatType_B5G6R5:
+		lineBytes = width * 2;
+		break;
 	case DataSetting2D::ColorFormatType_B8G8R8:
 		lineBytes = width * 3;
 		break;
@@ -223,8 +253,13 @@ void CDataView::ProcessAs2D()
 	m_imgWidth = width;
 	m_imgHeight = height;
 	
+	STATIC_ASSERT(sizeof(ColorB5G6R5) == 2);
+
 	gl::Buffer2D<ColorB8G8R8A8>& img = *(gl::Buffer2D<ColorB8G8R8A8>*)m_pImage;
 	switch (setting.colorFormat) {
+	case DataSetting2D::ColorFormatType_B5G6R5:
+		gl::BitBlockTransfer(gl::Buffer2D<ColorB5G6R5>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
+		break;
 	case DataSetting2D::ColorFormatType_B8G8R8:
 		gl::BitBlockTransfer(gl::Buffer2D<ColorB8G8R8>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
 		break;
