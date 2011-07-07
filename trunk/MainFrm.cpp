@@ -64,7 +64,7 @@ HWND CMainFrame::CreateClient()
 	// IMPORTANT! Make the splitter the parent of the MDI client
 	::SetParent(m_hWndMDIClient, m_splitter.m_hWnd);
 	
-	m_splitter.SetSplitterPos(340); // from left
+	m_splitter.SetSplitterPos(400); // from left
 	
 	// Splitter is ultimately the client of Main Frame (m_hWndClient)
 	return m_splitter.m_hWnd;

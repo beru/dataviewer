@@ -29,6 +29,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\DataViewer.ico"
+IDR_MDICHILD            ICON                    "res\\MemoryViewerDoc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -190,8 +191,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,6,1
- PRODUCTVERSION 1,0,6,1
+ FILEVERSION 1,0,7,1
+ PRODUCTVERSION 1,0,7,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -209,13 +210,13 @@ BEGIN
             VALUE "Comments", "nullpo"
             VALUE "CompanyName", "beruponu"
             VALUE "FileDescription", "DataViewer Module"
-            VALUE "FileVersion", "1, 0, 6, 1"
+            VALUE "FileVersion", "1, 0, 7, 1"
             VALUE "InternalName", "DataViewer"
             VALUE "LegalCopyright", "Copyright 2006"
             VALUE "LegalTrademarks", "beruponu"
             VALUE "OriginalFilename", "DataViewer.exe"
             VALUE "ProductName", "DataViewer Module"
-            VALUE "ProductVersion", "1, 0, 6, 1"
+            VALUE "ProductVersion", "1, 0, 7, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -405,6 +406,7 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
+        MENUITEM "&New",                        ID_FILE_NEW
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
     POPUP "&View"

@@ -42,7 +42,7 @@ struct ColorConverter
 	template <typename T>
 	__forceinline TargetColorT operator () (T from)
 	{
-		return TargetColorT(from);
+		return convert<TargetColorT>(from);
 	}
 
 };

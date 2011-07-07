@@ -62,6 +62,7 @@ struct DataSetting2D : IDataSetting
 	
 	enum ColorFormatType
 	{
+		ColorFormatType_B5G6R5,
 		ColorFormatType_B8G8R8,
 		ColorFormatType_B8G8R8A8,
 //		ColorFormatType_16F,
@@ -72,7 +73,7 @@ struct DataSetting2D : IDataSetting
 		ColorFormatType_16,
 		ColorFormatType_32,
 
-		ColorFormatType_Begin = ColorFormatType_B8G8R8,
+		ColorFormatType_Begin = 0,
 		ColorFormatType_End = ColorFormatType_32,
 	};
 

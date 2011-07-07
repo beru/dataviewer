@@ -27,6 +27,7 @@ struct ColorFormatTypeMapper : public TwoWayMap<CString, DataSetting2D::ColorFor
 {
 	ColorFormatTypeMapper()
 	{
+		map(CString("B5G6R5"),		DataSetting2D::ColorFormatType_B5G6R5);
 		map(CString("B8G8R8"),		DataSetting2D::ColorFormatType_B8G8R8);
 		map(CString("B8G8R8A8"),	DataSetting2D::ColorFormatType_B8G8R8A8);
 //		map(CString("16F"),			DataSetting2D::ColorFormatType_16F);
