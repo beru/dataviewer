@@ -3,6 +3,7 @@
 #include "arrayutil.h"
 #include "gl/rect.h"
 #include "gl/buffer2D_Bit.h"
+#include "gl/bit_reader.h"
 
 namespace gl {
 
@@ -21,19 +22,14 @@ void BitBlockTransfer(
 	
 	size_t srcWidth = src.GetWidth();
 	size_t srcHeight = src.GetHeight();
-	const size_t VALUE_BITS = sizeof(Buffer2D<bool>::value_type) * 8;
 	Buffer2D<bool>::value_type mask = 0;
 	for (size_t y=0; y<srcHeight; ++y) {
-		const Buffer2D<bool>::value_type* pSrc2 = pSrc;
 		TargetColorT* pTarget2 = pTarget;
-		for (size_t x=0; x<srcWidth; x+=VALUE_BITS) {
-			const Buffer2D<bool>::value_type srcVal = *pSrc2;
-			for (size_t i=0; i<VALUE_BITS; ++i) {
-				mask = (1 << (VALUE_BITS-1-i));
-				*pTarget2 = converter((srcVal & mask) != 0);
-				++pTarget2;
-			}
-			++pSrc2;
+		BitReader br;
+		br.Set(pSrc);
+		for (size_t x=0; x<srcWidth; ++x) {
+			*pTarget2 = br.Pop() ? TargetColorT(OneMinusEpsilon(0.0)) : TargetColorT(0.0);
+			++pTarget2;
 		}
 		OffsetPtr(pSrc, srcLineOffset);
 		OffsetPtr(pTarget, targetLineOffset);

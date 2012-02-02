@@ -32,13 +32,13 @@ struct ColorConverter
 			from.b
 		);
 	}
-
+	
 	template <typename SrcComponentT>
 	__forceinline void operator () (gl::Color1<SrcComponentT> from, TargetColorT& to)
 	{
 		to = TargetColorT(from.a);
 	}
-
+	
 	template <typename T>
 	__forceinline TargetColorT operator () (T from)
 	{

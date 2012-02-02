@@ -476,6 +476,10 @@
 				Name="gl"
 				>
 				<File
+					RelativePath=".\common\gl\bit_reader.h"
+					>
+				</File>
+				<File
 					RelativePath="common\gl\bitBlockTransfer.h"
 					>
 				</File>
