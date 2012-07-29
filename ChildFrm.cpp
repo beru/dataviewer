@@ -31,7 +31,7 @@ LRESULT CChildFrame::OnForwardMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lPara
 {
 	LPMSG pMsg = (LPMSG)lParam;
 
-	if(CMDIChildWindowImpl<CChildFrame>::PreTranslateMessage(pMsg))
+	if (CMDIChildWindowImpl<CChildFrame>::PreTranslateMessage(pMsg))
 		return TRUE;
 
 	return m_pView->PreTranslateMessage(pMsg);

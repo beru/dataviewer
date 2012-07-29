@@ -12,6 +12,10 @@
 #include "SettingDialog.h"
 #include "DataView.h"
 
+#include "app.h"
+
+App g_app;
+
 CMainFrame::CMainFrame()
 	:
 	m_pCurView(NULL)
@@ -123,6 +127,24 @@ LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 	return 0;
 }
 
+LRESULT CMainFrame::OnViewZoomin(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	m_pCurView->ZoomIn();
+	return 0;
+}
+
+LRESULT CMainFrame::OnViewZoomout(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	m_pCurView->ZoomOut();
+	return 0;
+}
+
+LRESULT CMainFrame::OnViewZoomreset(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	m_pCurView->ZoomReset();
+	return 0;
+}
+
 LRESULT CMainFrame::OnViewToolBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	static BOOL bVisible = TRUE;	// initially visible
@@ -193,3 +215,10 @@ void CMainFrame::ProcessData(const ProcessSetting& setting)
 	
 }
 
+
+LRESULT CMainFrame::OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	g_app.mode = (g_app.mode == App::Mode_Zoom) ? App::Mode_None : App::Mode_Zoom;
+	UISetCheck(ID_ZOOM, g_app.mode == App::Mode_Zoom);
+	return 0;
+}

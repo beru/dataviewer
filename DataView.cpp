@@ -14,6 +14,8 @@
 #include "gl/bitBlockTransfer.h"
 #include "gl/colorConverter.h"
 
+#include "app.h"
+
 typedef gl::fixed<8, unsigned char> Fixed8;
 typedef gl::fixed<16, unsigned short int> Fixed16;
 typedef gl::fixed<32, unsigned int> Fixed32;
@@ -70,7 +72,14 @@ NumericT g_slopeCorrTable[SLOPE_CORR_TABLE_SIZE];
 enum { FILTER_TABLE_SIZE = 64*2 };
 NumericT g_filterTable[FILTER_TABLE_SIZE];
 
+bool CDataView::isMouseClicked()
+{
+	return GetCapture() == m_hWnd && GetKeyState(GetSystemMetrics(SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON) < 0;
+}
+
 CDataView::CDataView()
+	:
+	m_pImage(0)
 {
 }
 
@@ -104,7 +113,7 @@ LRESULT CDataView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	m_pSetting = boost::shared_ptr<ProcessSetting>(new ProcessSetting);
 	m_pSetting->pDataSetting = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
-	m_scale = 1;
+	m_scale = 1.0;
 
 	return 0;
 }
@@ -130,6 +139,16 @@ BOOL CDataView::PreTranslateMessage(MSG* pMsg)
 	return FALSE;
 }
 
+void CDataView::drawZoomRect(CDC& dc, CPoint pt0, CPoint pt1)
+{
+	dc.SetROP2(R2_XORPEN);
+	::SelectObject(dc, GetStockObject(WHITE_PEN));
+	::SelectObject(dc, GetStockObject(NULL_BRUSH));
+	dc.Rectangle(pt0.x, pt0.y, pt1.x, pt1.y);
+	m_prevDrawPts[0] = pt0;
+	m_prevDrawPts[1] = pt1;
+}
+
 LRESULT CDataView::OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	CRect updateRect;
@@ -138,6 +157,13 @@ LRESULT CDataView::OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
 	}
 	CPaintDC dc(m_hWnd);
 	Render(dc);
+
+	switch (g_app.mode) {
+	case App::Mode_Zoom:
+		if (m_bZoomClicked) {
+			drawZoomRect(dc, getMouseDownPtScrolled(), m_prevMousePt);
+		}
+	}
 	return 0;
 }
 
@@ -455,7 +481,7 @@ void CDataView::RenderTEXT(CPaintDC& dc)
 	}
 }
 
-void CDataView::setScrollInfo()
+void CDataView::setScrollInfo(int hPos, int vPos)
 {
 	if (typeid(*m_pSetting->pDataSetting) == typeid(DataSetting2D) && m_pImage) {
 		BOOL bRedraw = TRUE;
@@ -466,14 +492,16 @@ void CDataView::setScrollInfo()
 		Size.cy = rec.Height();
 
 		SCROLLINFO si;
-		si.fMask = SIF_RANGE|SIF_PAGE;
+		si.fMask = SIF_RANGE|SIF_PAGE|SIF_POS;
 		GetScrollInfo(SB_HORZ, &si);
+		si.nPos = hPos;
 		si.nPage = Size.cx;
 		si.nMin = 0;
 		si.nMax = m_imgWidth * m_scale;
 		SetScrollInfo(SB_HORZ, &si, bRedraw);
 
 		GetScrollInfo(SB_VERT, &si);
+		si.nPos = vPos;
 		si.nPage = Size.cy;
 		si.nMin = 0;
 		si.nMax = m_imgHeight * m_scale;
@@ -486,7 +514,8 @@ void CDataView::setScrollInfo()
 LRESULT CDataView::OnSize(UINT state, CSize Size)
 {
 	if (IsWindow() && Size.cx != 0 && Size.cy != 0) {
-		setScrollInfo();
+		CPoint pt = getScrollPt();
+		setScrollInfo(pt.x, pt.y);
 //		Invalidate();
 //		UpdateWindow();
 	}
@@ -538,6 +567,21 @@ void CDataView::ProcessData(const ProcessSetting& setting)
 	UpdateWindow();
 }
 
+void CDataView::ZoomIn()
+{
+	setScale(m_scale*2.0);
+}
+
+void CDataView::ZoomOut()
+{
+	setScale(m_scale*0.5);
+}
+
+void CDataView::ZoomReset()
+{
+	setScale(1.0);
+}
+
 LRESULT CDataView::OnHScroll(int code, short pos, HWND hwndCtl)
 {
 	SCROLLINFO si;
@@ -570,7 +614,7 @@ LRESULT CDataView::OnHScroll(int code, short pos, HWND hwndCtl)
 		break;
 	}
 	if (newPos != -1) {
-		if (m_scale == 1) {
+		if (m_scale == 1.0) {
 			ScrollWindowEx(si.nPos - newPos, 0, 0, 0, 0, 0, SW_INVALIDATE);
 		}else {
 			Invalidate();
@@ -613,7 +657,7 @@ LRESULT CDataView::OnVScroll(int code, short pos, HWND hwndCtl)
 		break;
 	}
 	if (newPos != -1) {
-		if (m_scale == 1) {
+		if (m_scale == 1.0) {
 			ScrollWindowEx(0, si.nPos - newPos, 0, 0, 0, 0, SW_INVALIDATE);
 		}else {
 			Invalidate();
@@ -624,9 +668,94 @@ LRESULT CDataView::OnVScroll(int code, short pos, HWND hwndCtl)
 	return 0;
 }
 
+CPoint CDataView::getScrollPt()
+{
+	CPoint r;
+	SCROLLINFO si;
+	si.cbSize = sizeof(si);
+	si.fMask = SIF_POS;
+	GetScrollInfo(SB_HORZ, &si);
+	r.x = si.nPos;
+	GetScrollInfo(SB_VERT, &si);
+	r.y = si.nPos;
+	return r;
+}
+
+CPoint CDataView::getMouseDownPtScrolled()
+{
+	return m_mouseDownPt + (m_mouseDownScrollPos - getScrollPt());
+}
+
 LRESULT CDataView::OnLButtonDown(UINT Flags, CPoint Pt)
 {
 	SetFocus();
+
+	switch (g_app.mode) {
+	case App::Mode_Zoom:
+		m_bZoomClicked = true;
+		m_mouseDownPt = Pt;
+		m_prevMousePt = Pt;
+		m_mouseDownScrollPos = getScrollPt();
+		SetCapture();
+		break;
+	}
+	return 0;
+}
+
+LRESULT CDataView::OnLButtonUp(UINT Flags, CPoint Pt)
+{
+	switch (g_app.mode) {
+	case App::Mode_Zoom:
+		ReleaseCapture();
+		break;
+	}
+	return 0;
+}
+
+LRESULT CDataView::OnCaptureChanged(HWND NewCaptureOwner)
+{
+	if (m_bZoomClicked) {
+		CClientDC dc(m_hWnd);
+		drawZoomRect(dc, m_prevDrawPts[0], m_prevDrawPts[1]);
+		m_prevMousePt = m_mouseDownPt;
+		m_bZoomClicked = false;
+
+		CPoint diffPt = m_prevDrawPts[0] - m_prevDrawPts[1];
+		if (abs(diffPt.x) < 20 || abs(diffPt.y) < 20) {
+			return 0;
+		}
+
+		CPoint startPt = m_prevDrawPts[0];
+		startPt += getScrollPt();
+		startPt.x /= m_scale;
+		startPt.y /= m_scale;
+		CPoint endPt = m_prevDrawPts[1];
+		endPt += getScrollPt();
+		endPt.x /= m_scale;
+		endPt.y /= m_scale;
+
+		if (startPt.x > endPt.x) {
+			std::swap(startPt.x, endPt.x);
+		}
+		if (startPt.y > endPt.y) {
+			std::swap(startPt.y, endPt.y);
+		}
+
+		CRect rec;
+		GetClientRect(rec);
+		// alway right & bottom ??
+		rec.right -= GetSystemMetrics( SM_CXVSCROLL );
+		rec.bottom -= GetSystemMetrics( SM_CYHSCROLL );
+		
+		diffPt = endPt - startPt;
+		// ’·‚¢•Ó‚ðŠî€‚É‚·‚é
+		if (endPt.x-startPt.x >= endPt.y-startPt.y) {
+			setZoomWindow(rec.Width() / (double)diffPt.x, startPt.x, startPt.y);
+		}else {
+			setZoomWindow(rec.Height() / (double)diffPt.y, startPt.x, startPt.y);
+		}
+		
+	}
 	return 0;
 }
 
@@ -657,20 +786,44 @@ LRESULT CDataView::OnMouseWheel(UINT ControlCodes, short Distance, CPoint Pt)
 	return 0;
 }
 
-void CDataView::setScale(int newScale)
+LRESULT CDataView::OnMouseMove(UINT Flags, CPoint Pt)
 {
-	newScale = std::max(1, std::min(newScale, 32));
-	SCROLLINFO si;
-	si.cbSize = sizeof(si);
-	si.fMask = SIF_POS;
-	GetScrollInfo(SB_HORZ, &si);
-	si.nPos = si.nPos*newScale/m_scale;
-	SetScrollInfo(SB_HORZ, &si);
-	GetScrollInfo(SB_VERT, &si);
-	si.nPos = si.nPos*newScale/m_scale;
-	SetScrollInfo(SB_VERT, &si);
+	switch (g_app.mode) {
+	case App::Mode_Zoom:
+		if (isMouseClicked()) {
+			CClientDC dc(m_hWnd);
+			CPoint startPt = getMouseDownPtScrolled();
+			drawZoomRect(dc, startPt, m_prevMousePt);
+			drawZoomRect(dc, startPt, Pt);
+			m_prevMousePt = Pt;
+//			dc.MoveTo(m_mouseDownPt);
+//			dc.LineTo(Pt);
+		}
+	}
+	return 0;
+}
+
+inline
+double fixZoomScale(double scale)
+{
+	return std::max(1.0, std::min(scale, 128.0));
+}
+
+void CDataView::setZoomWindow(double newScale, int hPos, int vPos)
+{
+	m_scale = fixZoomScale(newScale);
+	setScrollInfo(hPos*m_scale, vPos*m_scale);
+}
+
+void CDataView::setScale(double newScale)
+{
+	newScale = fixZoomScale(newScale);
+
+	CPoint pt = getScrollPt();
+	pt.x *= newScale/m_scale;
+	pt.y *= newScale/m_scale;
 	m_scale = newScale;
-	setScrollInfo();
+	setScrollInfo(pt.x, pt.y);
 }
 
 LRESULT CDataView::OnKeyDown(TCHAR vk, UINT cRepeat, UINT flags)
@@ -678,11 +831,11 @@ LRESULT CDataView::OnKeyDown(TCHAR vk, UINT cRepeat, UINT flags)
 	switch (vk) {
 	case VK_ADD:
 	case VK_OEM_PLUS:
-		setScale(m_scale+1);
+		ZoomIn();
 		break;
 	case VK_SUBTRACT:
 	case VK_OEM_MINUS:
-		setScale(m_scale-1);
+		ZoomOut();
 		break;
 	}
 	return 0;
