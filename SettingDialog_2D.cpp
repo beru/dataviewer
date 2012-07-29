@@ -75,14 +75,14 @@ LRESULT CSettingDialog_2D::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 LRESULT CSettingDialog_2D::OnClickedOK(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	DoDataExchange(TRUE);
-	EndDialog(wID);
+//	DoDataExchange(TRUE);
+//	EndDialog(wID);
 	return 0;
 }
 
 LRESULT CSettingDialog_2D::OnClickedCancel(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	EndDialog(wID);
+//	EndDialog(wID);
 	return 0;
 }
 

@@ -72,6 +72,7 @@ private:
 	LRESULT OnCmbTargetStructureTypeCbnSelChange(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 	LRESULT OnBnClickedBtnReadTargetStructure(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnBnClickedBtnReadtargetstructure(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+
 };
 
 
