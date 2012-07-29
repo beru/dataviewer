@@ -284,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\app.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ChildFrm.h"
 				>
 			</File>

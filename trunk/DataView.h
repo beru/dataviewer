@@ -19,6 +19,10 @@ public:
 	void ReadData(const ProcessSetting& setting);
 	void ProcessData(const ProcessSetting& setting);
 	
+	void ZoomIn();
+	void ZoomOut();
+	void ZoomReset();
+	
 	BEGIN_MSG_MAP(CDataView)
 		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 		MSG_WM_CREATE(OnCreate)
@@ -32,6 +36,9 @@ public:
 		MSG_WM_RBUTTONDOWN(OnRButtonDown)
 		MSG_WM_MOUSEWHEEL(OnMouseWheel)
 		MSG_WM_KEYDOWN(OnKeyDown)
+		MSG_WM_LBUTTONUP(OnLButtonUp)
+		MSG_WM_MOUSEMOVE(OnMouseMove)
+		MSG_WM_CAPTURECHANGED(OnCaptureChanged)
 	END_MSG_MAP()
 	
 private:
@@ -47,7 +54,13 @@ private:
 	BITMAPINFO m_bmi;
 	void* m_pBits;
 	CDC m_memDC;
-	int m_scale;
+	double m_scale;
+
+	bool m_bZoomClicked;
+	CPoint m_mouseDownPt;
+	CPoint m_mouseDownScrollPos;
+	CPoint m_prevMousePt;
+	CPoint m_prevDrawPts[2];
 	
 	void ProcessAs1D();
 	void ProcessAs2D();
@@ -58,9 +71,15 @@ private:
 	void Render2D(CPaintDC& dc);
 	void RenderTEXT(CPaintDC& dc);
 
-	void setScrollInfo();
-	void setScale(int newScale);
+	void setScrollInfo(int hPos, int vPos);
 	
+	void setZoomWindow(double newScale, int hPos, int vPos);
+	void setScale(double newScale);
+	void drawZoomRect(CDC& dc, CPoint pt0, CPoint pt1);
+	bool isMouseClicked();
+	CPoint getMouseDownPtScrolled();
+	CPoint getScrollPt();
+
 	// Handler prototypes (uncomment arguments if needed):
 //	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 //	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -75,8 +94,12 @@ private:
 	LRESULT OnVScroll(int code, short pos, HWND hwndCtl);
 
 	LRESULT OnLButtonDown(UINT Flags, CPoint Pt);
+	LRESULT OnLButtonUp(UINT Flags, CPoint Pt);
 	LRESULT OnMButtonDown(UINT Flags, CPoint Pt);
 	LRESULT OnRButtonDown(UINT Flags, CPoint Pt);
 	LRESULT OnMouseWheel(UINT ControlCodes, short Distance, CPoint Pt);
 	LRESULT OnKeyDown(TCHAR vk, UINT cRepeat, UINT flags);
+	LRESULT OnMouseMove(UINT Flags, CPoint Pt);
+	LRESULT OnCaptureChanged(HWND NewCaptureOwner);
+
 };
