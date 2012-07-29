@@ -104,6 +104,7 @@ LRESULT CDataView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	m_pSetting = boost::shared_ptr<ProcessSetting>(new ProcessSetting);
 	m_pSetting->pDataSetting = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
+	m_scale = 1;
 
 	return 0;
 }
@@ -383,7 +384,7 @@ void CDataView::Render1D(CPaintDC& dc)
 		x1 = x;
 		y1 = y;
 	}
-
+	
 	dc.BitBlt(
 		updateRect.left,
 		updateRect.top,
@@ -411,6 +412,13 @@ void CDataView::Render2D(CPaintDC& dc)
 	int sx = std::max(0, GetScrollPos(SB_HORZ)) + tx;
 	int sy = std::max(0, GetScrollPos(SB_VERT)) + ty;
 
+#if 1
+	dc.StretchBlt(
+		tx, ty, w, h,
+		m_memDC, sx/m_scale, sy/m_scale, w/m_scale, h/m_scale,
+		SRCCOPY
+		);
+#else
 	dc.BitBlt(
 		tx,
 		ty,
@@ -421,7 +429,7 @@ void CDataView::Render2D(CPaintDC& dc)
 		sy,
 		SRCCOPY
 	);
-	
+#endif
 }
 
 void CDataView::RenderTEXT(CPaintDC& dc)
@@ -447,24 +455,38 @@ void CDataView::RenderTEXT(CPaintDC& dc)
 	}
 }
 
+void CDataView::setScrollInfo()
+{
+	if (typeid(*m_pSetting->pDataSetting) == typeid(DataSetting2D) && m_pImage) {
+		BOOL bRedraw = TRUE;
+		CSize Size;
+		CRect rec;
+		GetClientRect(rec);
+		Size.cx = rec.Width();
+		Size.cy = rec.Height();
+
+		SCROLLINFO si;
+		si.fMask = SIF_RANGE|SIF_PAGE;
+		GetScrollInfo(SB_HORZ, &si);
+		si.nPage = Size.cx;
+		si.nMin = 0;
+		si.nMax = m_imgWidth * m_scale;
+		SetScrollInfo(SB_HORZ, &si, bRedraw);
+
+		GetScrollInfo(SB_VERT, &si);
+		si.nPage = Size.cy;
+		si.nMin = 0;
+		si.nMax = m_imgHeight * m_scale;
+		SetScrollInfo(SB_VERT, &si, bRedraw);
+		Invalidate();
+	}
+
+}
+
 LRESULT CDataView::OnSize(UINT state, CSize Size)
 {
 	if (IsWindow() && Size.cx != 0 && Size.cy != 0) {
-		if (typeid(*m_pSetting->pDataSetting) == typeid(DataSetting2D) && m_pImage) {
-			SCROLLINFO si;
-			si.fMask = SIF_RANGE|SIF_PAGE;
-			GetScrollInfo(SB_HORZ, &si);
-			si.nPage = Size.cx;
-			si.nMin = 0;
-			si.nMax = m_imgWidth;
-			SetScrollInfo(SB_HORZ, &si, FALSE);
-
-			GetScrollInfo(SB_VERT, &si);
-			si.nPage = Size.cy;
-			si.nMin = 0;
-			si.nMax = m_imgHeight;
-			SetScrollInfo(SB_VERT, &si, FALSE);
-		}
+		setScrollInfo();
 //		Invalidate();
 //		UpdateWindow();
 	}
@@ -625,5 +647,36 @@ LRESULT CDataView::OnMouseWheel(UINT ControlCodes, short Distance, CPoint Pt)
 	SetScrollInfo(SB_VERT, &si);
 	Invalidate();
 	UpdateWindow();
+	return 0;
+}
+
+void CDataView::setScale(int newScale)
+{
+	newScale = std::max(1, std::min(newScale, 32));
+	SCROLLINFO si;
+	si.cbSize = sizeof(si);
+	si.fMask = SIF_POS;
+	GetScrollInfo(SB_HORZ, &si);
+	si.nPos = si.nPos*newScale/m_scale;
+	SetScrollInfo(SB_HORZ, &si);
+	GetScrollInfo(SB_VERT, &si);
+	si.nPos = si.nPos*newScale/m_scale;
+	SetScrollInfo(SB_VERT, &si);
+	m_scale = newScale;
+	setScrollInfo();
+}
+
+LRESULT CDataView::OnKeyDown(TCHAR vk, UINT cRepeat, UINT flags)
+{
+	switch (vk) {
+	case VK_ADD:
+	case VK_OEM_PLUS:
+		setScale(m_scale+1);
+		break;
+	case VK_SUBTRACT:
+	case VK_OEM_MINUS:
+		setScale(m_scale-1);
+		break;
+	}
 	return 0;
 }

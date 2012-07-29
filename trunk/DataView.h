@@ -31,6 +31,7 @@ public:
 		MSG_WM_MBUTTONDOWN(OnMButtonDown)
 		MSG_WM_RBUTTONDOWN(OnRButtonDown)
 		MSG_WM_MOUSEWHEEL(OnMouseWheel)
+		MSG_WM_KEYDOWN(OnKeyDown)
 	END_MSG_MAP()
 	
 private:
@@ -46,6 +47,7 @@ private:
 	BITMAPINFO m_bmi;
 	void* m_pBits;
 	CDC m_memDC;
+	int m_scale;
 	
 	void ProcessAs1D();
 	void ProcessAs2D();
@@ -55,6 +57,9 @@ private:
 	void Render1D(CPaintDC& dc);
 	void Render2D(CPaintDC& dc);
 	void RenderTEXT(CPaintDC& dc);
+
+	void setScrollInfo();
+	void setScale(int newScale);
 	
 	// Handler prototypes (uncomment arguments if needed):
 //	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -73,4 +78,5 @@ private:
 	LRESULT OnMButtonDown(UINT Flags, CPoint Pt);
 	LRESULT OnRButtonDown(UINT Flags, CPoint Pt);
 	LRESULT OnMouseWheel(UINT ControlCodes, short Distance, CPoint Pt);
+	LRESULT OnKeyDown(TCHAR vk, UINT cRepeat, UINT flags);
 };
