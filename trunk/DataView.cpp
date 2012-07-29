@@ -570,10 +570,13 @@ LRESULT CDataView::OnHScroll(int code, short pos, HWND hwndCtl)
 		break;
 	}
 	if (newPos != -1) {
-		int diff = si.nPos - newPos;
+		if (m_scale == 1) {
+			ScrollWindowEx(si.nPos - newPos, 0, 0, 0, 0, 0, SW_INVALIDATE);
+		}else {
+			Invalidate();
+		}
 		si.nPos = newPos;
 		SetScrollInfo(SB_HORZ, &si);
-		ScrollWindowEx(diff, 0, 0, 0, 0, 0, SW_INVALIDATE);
 	}
 	return 0;
 }
@@ -610,7 +613,11 @@ LRESULT CDataView::OnVScroll(int code, short pos, HWND hwndCtl)
 		break;
 	}
 	if (newPos != -1) {
-		ScrollWindowEx(0, si.nPos - newPos, 0, 0, 0, 0, SW_INVALIDATE);
+		if (m_scale == 1) {
+			ScrollWindowEx(0, si.nPos - newPos, 0, 0, 0, 0, SW_INVALIDATE);
+		}else {
+			Invalidate();
+		}
 		si.nPos = newPos;
 		SetScrollInfo(SB_VERT, &si);
 	}
