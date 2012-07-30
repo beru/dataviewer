@@ -104,7 +104,7 @@ CAPTION "About"
 FONT 9, "MS UI Gothic", 400, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,130,58,50,14
-    CTEXT           "DataViewer v1.0.5",IDC_STATIC,25,57,78,10
+    CTEXT           "DataViewer v1.0.8",IDC_STATIC,25,57,78,10
     ICON            IDR_MAINFRAME,IDC_STATIC,55,26,20,20
     GROUPBOX        "",IDC_STATIC,7,7,115,65
 END
@@ -210,13 +210,13 @@ BEGIN
             VALUE "Comments", "nullpo"
             VALUE "CompanyName", "beruponu"
             VALUE "FileDescription", "DataViewer Module"
-            VALUE "FileVersion", "1, 0, 7, 1"
+            VALUE "FileVersion", "1, 0, 8, 1"
             VALUE "InternalName", "DataViewer"
             VALUE "LegalCopyright", "Copyright 2006"
             VALUE "LegalTrademarks", "beruponu"
             VALUE "OriginalFilename", "DataViewer.exe"
             VALUE "ProductName", "DataViewer Module"
-            VALUE "ProductVersion", "1, 0, 7, 1"
+            VALUE "ProductVersion", "1, 0, 8, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -367,6 +367,8 @@ END
 IDR_MAINFRAME TOOLBAR  32, 32
 BEGIN
     BUTTON      ID_FILE_NEW
+    SEPARATOR
+    BUTTON      ID_HAND
     SEPARATOR
     BUTTON      ID_ZOOM
     SEPARATOR

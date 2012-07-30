@@ -1,5 +1,7 @@
 #pragma once
 
+#include "app.h"
+
 namespace gl {
 class IBuffer2D;
 }
@@ -56,11 +58,12 @@ private:
 	CDC m_memDC;
 	double m_scale;
 
-	bool m_bZoomClicked;
+	bool m_bClicked;
 	CPoint m_mouseDownPt;
-	CPoint m_mouseDownScrollPos;
+	CPoint m_scrollPosAtMouseDown;
 	CPoint m_prevMousePt;
 	CPoint m_prevDrawPts[2];
+	App::Mode m_mode;
 	
 	void ProcessAs1D();
 	void ProcessAs2D();

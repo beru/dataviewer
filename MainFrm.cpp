@@ -101,6 +101,7 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 	UIAddToolBar(hWndToolBar);
 	UISetCheck(ID_VIEW_TOOLBAR, 1);
 	UISetCheck(ID_VIEW_STATUS_BAR, 1);
+	updateUI();
 
 	// register object for message filtering and idle updates
 	CMessageLoop* pLoop = _Module.GetMessageLoop();
@@ -215,10 +216,22 @@ void CMainFrame::ProcessData(const ProcessSetting& setting)
 	
 }
 
+void CMainFrame::updateUI()
+{
+	UISetCheck(ID_HAND, g_app.mode == App::Mode_Hand);
+	UISetCheck(ID_ZOOM, g_app.mode == App::Mode_Zoom);
+}
+
+LRESULT CMainFrame::OnHand(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	g_app.mode = App::Mode_Hand;
+	updateUI();
+	return 0;
+}
 
 LRESULT CMainFrame::OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl)
 {
-	g_app.mode = (g_app.mode == App::Mode_Zoom) ? App::Mode_None : App::Mode_Zoom;
-	UISetCheck(ID_ZOOM, g_app.mode == App::Mode_Zoom);
+	g_app.mode = App::Mode_Zoom;
+	updateUI();
 	return 0;
 }
