@@ -851,10 +851,22 @@ void CDataView::setZoomWindow(double newScale, int hPos, int vPos)
 void CDataView::setScale(double newScale)
 {
 	newScale = fixZoomScale(newScale);
-
+	CRect rec;
+	GetClientRect(rec);
 	CPoint pt = getScrollPt();
-	pt.x *= newScale/m_scale;
-	pt.y *= newScale/m_scale;
+	double ratio;
+	if (newScale < m_scale) {
+		ratio = 1.0 - newScale/m_scale;
+		CPoint offset(rec.Width()*ratio, rec.Height()*ratio);
+		pt.x = pt.x / (m_scale/newScale) - offset.x/2;
+		pt.y = pt.y / (m_scale/newScale) - offset.y/2;
+	}else {
+		ratio = 1.0 - m_scale/newScale;
+		CPoint offset(rec.Width()*ratio, rec.Height()*ratio);
+		pt.x = (pt.x + offset.x/2) / (m_scale/newScale);
+		pt.y = (pt.y + offset.y/2) / (m_scale/newScale);
+	}
+//	pt += offset;
 	m_scale = newScale;
 	setScrollInfo(pt.x, pt.y);
 }
