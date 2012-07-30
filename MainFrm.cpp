@@ -192,27 +192,27 @@ LRESULT CMainFrame::OnWindowArrangeIcons(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
 	return 0;
 }
 
-void CMainFrame::SetSettingView(const ProcessSetting& setting)
+void CMainFrame::SetSettingView(const ProcessSetting& setting, const IDataSetting* pDataSetting)
 {
-	m_pSettingDlg->SetSetting(setting);
+	m_pSettingDlg->SetSetting(setting, pDataSetting);
 	
 }
 
-void CMainFrame::ReadData(const ProcessSetting& setting)
+void CMainFrame::ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
 {
 	if (!m_pCurView)
 		return;
 	
-	m_pCurView->ReadData(setting);
+	m_pCurView->ReadData(setting, pDataSetting);
 	
 }
 
-void CMainFrame::ProcessData(const ProcessSetting& setting)
+void CMainFrame::ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
 {
 	if (!m_pCurView)
 		return;
 	
-	m_pCurView->ProcessData(setting);
+	m_pCurView->ProcessData(setting, pDataSetting);
 	
 }
 
@@ -233,5 +233,17 @@ LRESULT CMainFrame::OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl)
 {
 	g_app.mode = App::Mode_Zoom;
 	updateUI();
+	return 0;
+}
+
+LRESULT CMainFrame::OnEditCopy(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	m_pSettingDlg->CopyToClipboard();
+	return 0;
+}
+
+LRESULT CMainFrame::OnEditPaste(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	m_pSettingDlg->PasteFromClipboard();
 	return 0;
 }

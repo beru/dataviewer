@@ -3,6 +3,7 @@
 
 #include "converter.h"
 #include "Setting.h"
+#include "arrayutil.h"
 
 #include "SettingDialog_1D.h"
 #include "SettingDialog_2D.h"
@@ -23,8 +24,12 @@ CSettingDialog::~CSettingDialog()
 {
 }
 
+static UINT clipBoardFormat_;
+
 LRESULT CSettingDialog::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	clipBoardFormat_ = RegisterClipboardFormat(_T("beruponu DataViewer"));
+	
 	DoDataExchange();
 //	SetSetting();
 
@@ -91,7 +96,7 @@ BOOL CSettingDialog::OnIdle()
 	return FALSE;
 }
 
-void CSettingDialog::SetSetting(const ProcessSetting& setting)
+void CSettingDialog::SetSetting(const ProcessSetting& setting, const IDataSetting* pDataSetting)
 {
 	switch (setting.dataSourceKeyType) {
 	case DataSourceKeyType_ImageName:
@@ -111,18 +116,18 @@ void CSettingDialog::SetSetting(const ProcessSetting& setting)
 	SetDlgItemText(IDC_EDT_ADDRESS_OFFSET, setting.addressOffsetFormula);
 	convert(setting.addressOffsetMultiplier, str); SetDlgItemText(IDC_EDT_ADDRESS_OFFSET_MULTIPLIER, str);
 
-	assert (setting.pDataSetting);
-	const type_info& dataType = typeid(*setting.pDataSetting);
+	assert (pDataSetting);
+	const type_info& dataType = typeid(*pDataSetting);
 	if (dataType == typeid(DataSetting1D)) {
-		m_pDlg1D->SetSetting(dynamic_cast<const DataSetting1D&>(*setting.pDataSetting));
+		m_pDlg1D->SetSetting(dynamic_cast<const DataSetting1D&>(*pDataSetting));
 		m_wndTab.SetCurSel(0);
 		OnSelTab(0);
 	}else if (dataType == typeid(DataSetting2D)) {
-		m_pDlg2D->SetSetting(dynamic_cast<const DataSetting2D&>(*setting.pDataSetting));
+		m_pDlg2D->SetSetting(dynamic_cast<const DataSetting2D&>(*pDataSetting));
 		m_wndTab.SetCurSel(1);
 		OnSelTab(1);
 	}else {
-		m_pDlgTEXT->SetSetting(dynamic_cast<const DataSettingTEXT&>(*setting.pDataSetting));
+		m_pDlgTEXT->SetSetting(dynamic_cast<const DataSettingTEXT&>(*pDataSetting));
 		m_wndTab.SetCurSel(2);
 		OnSelTab(2);
 	}
@@ -150,7 +155,7 @@ void CSettingDialog::OnSelTab(size_t idx)
 	}
 }
 
-void CSettingDialog::RetrieveSetting(ProcessSetting& setting)
+void CSettingDialog::RetrieveSetting(ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
 {
 	try {
 
@@ -162,22 +167,22 @@ void CSettingDialog::RetrieveSetting(ProcessSetting& setting)
 			setting.dataSourceKeyType = DataSourceKeyType_PID;
 		}
 
-		m_wndCmbImageName.GetWindowText(setting.imageName);
+		m_wndCmbImageName.GetWindowText(setting.imageName, Count(setting.imageName));
 		GetDlgItemText(IDC_EDT_PID, str);
 		convert(str, setting.pid);
 		
-		GetDlgItemText(IDC_EDT_ADDRESS_BASE, setting.addressBaseFormula);
-		GetDlgItemText(IDC_EDT_ADDRESS_OFFSET, setting.addressOffsetFormula);
+		GetDlgItemText(IDC_EDT_ADDRESS_BASE, setting.addressBaseFormula, Count(setting.addressBaseFormula));
+		GetDlgItemText(IDC_EDT_ADDRESS_OFFSET, setting.addressOffsetFormula, Count(setting.addressOffsetFormula));
 		
 		GetDlgItemText(IDC_EDT_ADDRESS_OFFSET_MULTIPLIER, str);
 		convert(str, setting.addressOffsetMultiplier);
 		
 		if (m_pDlg1D->IsWindowVisible()) {
-			m_pDlg1D->RetrieveSetting(setting.pDataSetting);
+			m_pDlg1D->RetrieveSetting(pDataSetting);
 		}else if (m_pDlg2D->IsWindowVisible()) {
-			m_pDlg2D->RetrieveSetting(setting.pDataSetting);
+			m_pDlg2D->RetrieveSetting(pDataSetting);
 		}else {
-			m_pDlgTEXT->RetrieveSetting(setting.pDataSetting);
+			m_pDlgTEXT->RetrieveSetting(pDataSetting);
 		}
 
 	}catch(...) {
@@ -257,21 +262,6 @@ bool CSettingDialog::FetchProcessData(LPCVOID pTargetAddress, void* pWriteBuffer
 	return false;
 }
 
-LRESULT CSettingDialog::OnBtnCopyBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl)
-{
-	m_pProcessSetting_Tmp = boost::shared_ptr<ProcessSetting>(new ProcessSetting);
-	RetrieveSetting(*m_pProcessSetting_Tmp);
-	return 0;
-}
-
-LRESULT CSettingDialog::OnBtnPasteBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl)
-{
-	if (m_pProcessSetting_Tmp) {
-		SetSetting(*m_pProcessSetting_Tmp);
-	}
-	return 0;
-}
-
 LRESULT CSettingDialog::OnBnClickedBtnRead(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	ReadData();
@@ -299,8 +289,9 @@ void CSettingDialog::ReadData()
 {
 	if (m_readDelegate) {
 		ProcessSetting setting;
-		RetrieveSetting(setting);
-		m_readDelegate(setting);
+		boost::shared_ptr<IDataSetting> pDataSetting;
+		RetrieveSetting(setting, pDataSetting);
+		m_readDelegate(setting, pDataSetting);
 	}
 }
 
@@ -308,8 +299,45 @@ void CSettingDialog::ProcessData()
 {
 	if (m_processDelegate) {
 		ProcessSetting setting;
-		RetrieveSetting(setting);
-		m_processDelegate(setting);
+		boost::shared_ptr<IDataSetting> pDataSetting;
+		RetrieveSetting(setting, pDataSetting);
+		m_processDelegate(setting, pDataSetting);
 	}
+}
+
+void CSettingDialog::CopyToClipboard()
+{
+	if (!OpenClipboard()) {
+		return;
+	}
+	EmptyClipboard();
+	HGLOBAL hG = GlobalAlloc(GHND, sizeof(ProcessSetting) + sizeof(DataSetting2D));
+	uint8_t* mem = (uint8_t*) GlobalLock(hG);
+
+	ProcessSetting processSetting;
+	boost::shared_ptr<IDataSetting> pDataSetting;
+	RetrieveSetting(processSetting, pDataSetting);
+	memcpy(mem, &processSetting, sizeof(processSetting));
+	memcpy(mem+sizeof(processSetting), pDataSetting.get(), sizeof(DataSetting2D));
+
+	GlobalUnlock(mem);
+	SetClipboardData(clipBoardFormat_, hG);
+	CloseClipboard();
+}
+
+void CSettingDialog::PasteFromClipboard()
+{
+	if (!OpenClipboard()) {
+		return;
+	}
+	HANDLE hClip = GetClipboardData(clipBoardFormat_);
+	if (!hClip) {
+		CloseClipboard();
+		return;
+	}
+	const uint8_t* mem = (const uint8_t*) GlobalLock(hClip);
+	SetSetting(*(const ProcessSetting*)mem, (const IDataSetting*)(mem+sizeof(ProcessSetting)));
+	GlobalUnlock(hClip);
+	CloseClipboard();
 }
 

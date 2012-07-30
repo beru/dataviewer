@@ -1,8 +1,5 @@
 #pragma once
 
-#include <boost/cstdint.hpp>
-using namespace boost;
-
 template <typename T>
 bool InArray(const T& val, const T arr[])
 {

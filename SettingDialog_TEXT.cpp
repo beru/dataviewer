@@ -4,6 +4,7 @@
 
 #include "converter.h"
 #include "Setting.h"
+#include "arrayutil.h"
 
 CSettingDialog_TEXT::CSettingDialog_TEXT()
 {
@@ -34,7 +35,7 @@ void CSettingDialog_TEXT::RetreiveSetting(DataSettingTEXT& setting)
 {
 	try {
 		CString str;
-		GetDlgItemText(IDC_EDT_BYTES, setting.bytesFormula);
+		GetDlgItemText(IDC_EDT_BYTES, setting.bytesFormula, Count(setting.bytesFormula));
 	}catch(...) {
 		;
 	}
@@ -43,8 +44,8 @@ void CSettingDialog_TEXT::RetreiveSetting(DataSettingTEXT& setting)
 
 void CSettingDialog_TEXT::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
 {
-	boost::shared_ptr<DataSettingTEXT> ps = boost::shared_ptr<DataSettingTEXT>(new DataSettingTEXT);
+	DataSettingTEXT* ps = new DataSettingTEXT();
 	RetreiveSetting(*ps);
-	pSetting = ps;
+	pSetting = boost::shared_ptr<DataSettingTEXT>(ps);
 }
 

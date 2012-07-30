@@ -109,8 +109,7 @@ LRESULT CDataView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	gl::SetupSlopeCorrectionTable(g_slopeCorrTable, SLOPE_CORR_TABLE_SIZE);
 	gl::SetupFilterTable(g_filterTable, FILTER_TABLE_SIZE, 0.75);
 	
-	m_pSetting = boost::shared_ptr<ProcessSetting>(new ProcessSetting);
-	m_pSetting->pDataSetting = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
+	m_pDataSetting = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
 	m_scale = 1.0;
 
 	return 0;
@@ -167,7 +166,7 @@ LRESULT CDataView::OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, 
 
 void CDataView::Render(CPaintDC& dc)
 {
-	const type_info& ti = typeid(*m_pSetting->pDataSetting);
+	const type_info& ti = typeid(*m_pDataSetting);
 	if (ti == typeid(DataSetting1D)) {
 		Render1D(dc);
 	}else if (ti == typeid(DataSetting2D)) {
@@ -181,7 +180,7 @@ void CDataView::ProcessData()
 {
 	if (m_data.size() == 0)
 		return;
-	const type_info& ti = typeid(*m_pSetting->pDataSetting);
+	const type_info& ti = typeid(*m_pDataSetting);
 	if (ti == typeid(DataSetting1D)) {
 		ProcessAs1D();
 	}else if (ti == typeid(DataSetting2D)) {
@@ -197,7 +196,7 @@ void CDataView::ProcessAs1D()
 {
 	size_t dataBytes = m_data.size();
 	const char* pData = &m_data[0];
-	const DataSetting1D& dataSetting = dynamic_cast<DataSetting1D&>(*m_pSetting->pDataSetting);
+	const DataSetting1D& dataSetting = dynamic_cast<const DataSetting1D&>(*m_pDataSetting);
 	DataReader<NumericT>::ReadDataAs(&dataSetting.GetTypeInfo(), m_values, pData, dataBytes);
 }
 
@@ -206,7 +205,7 @@ void CDataView::ProcessAs2D()
 	size_t dataBytes = m_data.size();
 	const char* pData = &m_data[0];
 	
-	const DataSetting2D& setting = dynamic_cast<DataSetting2D&>(*m_pSetting->pDataSetting);
+	const DataSetting2D& setting = dynamic_cast<const DataSetting2D&>(*m_pDataSetting);
 	int width = EvalFormula(setting.widthFormula);
 	if (width <= 0)
 		return;
@@ -324,7 +323,7 @@ void CDataView::Render1D(CPaintDC& dc)
 		return;
 	}
 	const std::vector<double>& values = m_values;
-	const DataSetting1D& dataSetting = dynamic_cast<DataSetting1D&>(*m_pSetting->pDataSetting);
+	const DataSetting1D& dataSetting = dynamic_cast<const DataSetting1D&>(*m_pDataSetting);
 	size_t dataCount = dataSetting.GetTotalBytes() / dataSetting.GetElementSize();
 	
 	double min = 0;
@@ -461,7 +460,7 @@ void CDataView::RenderTEXT(CPaintDC& dc)
 	if (m_values.size() == 0) {
 		return;
 	}
-	const DataSettingTEXT& dataSetting = dynamic_cast<DataSettingTEXT&>(*m_pSetting->pDataSetting);
+	const DataSettingTEXT& dataSetting = dynamic_cast<const DataSettingTEXT&>(*m_pDataSetting);
 //	m_memDC.TextOut(10, 10, _T("test"), -1);
 	size_t nBytes = dataSetting.GetTotalBytes();
 	size_t nLines = nBytes / 16 + ((nBytes % 16) ? 1 : 0);
@@ -481,7 +480,7 @@ void CDataView::RenderTEXT(CPaintDC& dc)
 
 void CDataView::setScrollInfo(int hPos, int vPos)
 {
-	if (typeid(*m_pSetting->pDataSetting) == typeid(DataSetting2D) && m_pImage) {
+	if (typeid(*m_pDataSetting) == typeid(DataSetting2D) && m_pImage) {
 		BOOL bRedraw = TRUE;
 		CSize Size;
 		CRect rec;
@@ -520,9 +519,9 @@ LRESULT CDataView::OnSize(UINT state, CSize Size)
 	return 0;
 }
 
-bool FetchProcessData(const ProcessSetting& setting, std::vector<char>& data)
+bool FetchProcessData(const ProcessSetting& setting, const boost::shared_ptr<IDataSetting>& pDataSetting, std::vector<char>& data)
 {
-	size_t dataLength = setting.pDataSetting->GetTotalBytes();
+	size_t dataLength = pDataSetting->GetTotalBytes();
 	if (dataLength == 0)
 		return false;
 	data.resize(dataLength);
@@ -530,12 +529,12 @@ bool FetchProcessData(const ProcessSetting& setting, std::vector<char>& data)
 
 	int addressBase = AddressHexStrToNum(setting.addressBaseFormula);
 	int addressOffset = EvalFormula(setting.addressOffsetFormula) * setting.addressOffsetMultiplier;
-	addressOffset += setting.pDataSetting->GetAddressOffset();
+	addressOffset += pDataSetting->GetAddressOffset();
 	LPCVOID pTarget = (LPVOID) (addressBase + addressOffset);
 	bool ret = false;
 	switch (setting.dataSourceKeyType) {
 	case DataSourceKeyType_ImageName:
-		if (setting.imageName.IsEmpty()) {
+		if (_tcslen(setting.imageName) == 0) {
 			return false;
 		}
 		ret = ReadProcessData(setting.imageName, pTarget, buffer, dataLength);
@@ -547,19 +546,21 @@ bool FetchProcessData(const ProcessSetting& setting, std::vector<char>& data)
 	return ret;
 }
 
-void CDataView::ReadData(const ProcessSetting& setting)
+void CDataView::ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
 {
-	*m_pSetting = setting;
-	if (FetchProcessData(setting, m_data)) {
+	m_processSetting = setting;
+	m_pDataSetting = pDataSetting;
+	if (FetchProcessData(setting, pDataSetting, m_data)) {
 		ProcessData();
 		Invalidate();
 		UpdateWindow();
 	}
 }
 
-void CDataView::ProcessData(const ProcessSetting& setting)
+void CDataView::ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
 {
-	*m_pSetting = setting;
+	m_processSetting = setting;
+	m_pDataSetting = pDataSetting;
 	ProcessData();
 	Invalidate();
 	UpdateWindow();

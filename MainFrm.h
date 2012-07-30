@@ -1,6 +1,7 @@
 #pragma once
 
 struct ProcessSetting;
+struct IDataSetting;
 
 class CMainFrame
 	:
@@ -22,9 +23,9 @@ public:
 	
 	HWND CreateClient();
 
-	void ReadData(const ProcessSetting& setting);
-	void ProcessData(const ProcessSetting& setting);
-	void SetSettingView(const ProcessSetting& setting);
+	void ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void SetSettingView(const ProcessSetting& setting, const IDataSetting* pDataSetting);
 	void updateUI();
 	
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -51,6 +52,8 @@ public:
 		COMMAND_ID_HANDLER(ID_WINDOW_TILE_HORZ, OnWindowTile)
 		COMMAND_ID_HANDLER_EX(ID_HAND, OnHand)
 		COMMAND_ID_HANDLER_EX(ID_ZOOM, OnZoom)
+		COMMAND_ID_HANDLER_EX(ID_EDIT_COPY, OnEditCopy)
+		COMMAND_ID_HANDLER_EX(ID_EDIT_PASTE, OnEditPaste)
 
 //		COMMAND_ID_HANDLER(ID_WINDOW_ARRANGE, OnWindowArrangeIcons)
 		CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)
@@ -78,4 +81,6 @@ public:
 	LRESULT OnWindowArrangeIcons(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnHand(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 	LRESULT OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl);
+	LRESULT OnEditCopy(WORD wNotifyCode, WORD wID, HWND hWndCtl);
+	LRESULT OnEditPaste(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 };
