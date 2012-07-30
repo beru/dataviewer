@@ -25,6 +25,7 @@ public:
 	void ReadData(const ProcessSetting& setting);
 	void ProcessData(const ProcessSetting& setting);
 	void SetSettingView(const ProcessSetting& setting);
+	void updateUI();
 	
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual BOOL OnIdle();
@@ -32,6 +33,7 @@ public:
 	BEGIN_UPDATE_UI_MAP(CMainFrame)
 		UPDATE_ELEMENT(ID_VIEW_TOOLBAR, UPDUI_MENUPOPUP)
 		UPDATE_ELEMENT(ID_VIEW_STATUS_BAR, UPDUI_MENUPOPUP)
+		UPDATE_ELEMENT(ID_HAND, UPDUI_MENUPOPUP|UPDUI_TOOLBAR)
 		UPDATE_ELEMENT(ID_ZOOM, UPDUI_MENUPOPUP|UPDUI_TOOLBAR)
 	END_UPDATE_UI_MAP()
 	
@@ -47,6 +49,7 @@ public:
 		COMMAND_ID_HANDLER(ID_APP_ABOUT, OnAppAbout)
 		COMMAND_ID_HANDLER(ID_WINDOW_CASCADE, OnWindowCascade)
 		COMMAND_ID_HANDLER(ID_WINDOW_TILE_HORZ, OnWindowTile)
+		COMMAND_ID_HANDLER_EX(ID_HAND, OnHand)
 		COMMAND_ID_HANDLER_EX(ID_ZOOM, OnZoom)
 
 //		COMMAND_ID_HANDLER(ID_WINDOW_ARRANGE, OnWindowArrangeIcons)
@@ -73,5 +76,6 @@ public:
 	LRESULT OnWindowCascade(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnWindowTile(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnWindowArrangeIcons(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnHand(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 	LRESULT OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 };

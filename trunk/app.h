@@ -2,8 +2,8 @@
 
 struct App {
 
-	enum {
-		Mode_None,
+	enum Mode {
+		Mode_Hand,
 		Mode_Zoom,
 	} mode;
 
