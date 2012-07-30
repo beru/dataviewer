@@ -57,7 +57,7 @@ LRESULT CChildFrame::OnMDIActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		::DrawMenuBar(GetMainFrame());
 
 		m_pMainFrame->m_pCurView = m_pView.get();
-		m_pMainFrame->SetSettingView(m_pView->GetSetting());
+		m_pMainFrame->SetSettingView(m_pView->GetProcessSetting(), m_pView->GetDataSetting());
 	}
 	else if((HWND)lParam == NULL) { // last child has closed
 		m_pMainFrame->m_pCurView = NULL;

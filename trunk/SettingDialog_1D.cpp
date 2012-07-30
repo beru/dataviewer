@@ -4,6 +4,7 @@
 
 #include "converter.h"
 #include "Setting.h"
+#include "arrayutil.h"
 
 #include "TwoWayMap.h"
 
@@ -67,10 +68,10 @@ void CSettingDialog_1D::RetreiveSetting(DataSetting1D& setting)
 		CString str;
 		m_wndCmbType.GetLBText(m_wndCmbType.GetCurSel(), str);
 		setting.dataType = dataTypeMapper[str];
-		GetDlgItemText(IDC_EDT_COUNT, setting.countFormula);
+		GetDlgItemText(IDC_EDT_COUNT, setting.countFormula, Count(setting.countFormula));
 		setting.viewAuto = (IsDlgButtonChecked(IDC_CHK_VIEWAUTO) == BST_CHECKED);
-		GetDlgItemText(IDC_EDT_VIEW_MIN, setting.viewMinFormula);
-		GetDlgItemText(IDC_EDT_VIEW_MAX, setting.viewMaxFormula);
+		GetDlgItemText(IDC_EDT_VIEW_MIN, setting.viewMinFormula, Count(setting.viewMinFormula));
+		GetDlgItemText(IDC_EDT_VIEW_MAX, setting.viewMaxFormula, Count(setting.viewMaxFormula));
 	}catch(...) {
 		;
 	}
@@ -79,9 +80,9 @@ void CSettingDialog_1D::RetreiveSetting(DataSetting1D& setting)
 
 void CSettingDialog_1D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
 {
-	boost::shared_ptr<DataSetting1D> ps = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
-	RetreiveSetting(*ps);
-	pSetting = ps;
+	DataSetting1D* p = new DataSetting1D();
+	RetreiveSetting(*p);
+	pSetting = boost::shared_ptr<DataSetting1D>(p);
 }
 
 LRESULT CSettingDialog_1D::OnBnClickedChkViewauto(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

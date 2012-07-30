@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma pack(push,1)
+
 enum DataSourceKeyType
 {
 	DataSourceKeyType_ImageName,
@@ -36,10 +38,10 @@ struct DataSetting1D : public IDataSetting
 	DataSetting1D();
 	
 	DataType	dataType;
-	CString		countFormula;
+	TCHAR		countFormula[128];
 	bool		viewAuto;
-	CString		viewMinFormula;
-	CString		viewMaxFormula;
+	TCHAR		viewMinFormula[128];
+	TCHAR		viewMaxFormula[128];
 
 	size_t GetTotalBytes() const;
 	size_t GetElementSize() const;
@@ -78,11 +80,11 @@ struct DataSetting2D : IDataSetting
 	};
 
 	TargetStructureType	targetStructureType;
-	CString	structureAddressFormula;
+	TCHAR	structureAddressFormula[128];
 	
-	CString	widthFormula;
-	CString	heightFormula;
-	CString	lineOffsetFormula;
+	TCHAR	widthFormula[128];
+	TCHAR	heightFormula[128];
+	TCHAR	lineOffsetFormula[128];
 	AddressedLine	addressedLine;
 	ColorFormatType	colorFormat;
 
@@ -92,7 +94,7 @@ struct DataSetting2D : IDataSetting
 
 struct DataSettingTEXT : IDataSetting
 {
-	CString bytesFormula;
+	TCHAR	bytesFormula[128];
 	size_t GetTotalBytes() const;
 	int GetAddressOffset() const;
 };
@@ -102,12 +104,12 @@ struct ProcessSetting
 	ProcessSetting();
 	
 	DataSourceKeyType	dataSourceKeyType;
-	CString				imageName;
+	TCHAR				imageName[128];
 	DWORD				pid;
-	CString				addressBaseFormula;
-	CString				addressOffsetFormula;
+	TCHAR				addressBaseFormula[128];
+	TCHAR				addressOffsetFormula[128];
 	int					addressOffsetMultiplier;
 	
-	boost::shared_ptr<IDataSetting>	pDataSetting;
 };
 
+#pragma pack(pop)

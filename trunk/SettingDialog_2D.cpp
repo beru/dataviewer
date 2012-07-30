@@ -9,6 +9,7 @@
 
 #include "TwoWayMap.h"
 #include "converter.h"
+#include "arrayutil.h"
 
 #include "Setting.h"
 
@@ -170,21 +171,21 @@ void CSettingDialog_2D::EnableControls(bool bEnable)
 
 void CSettingDialog_2D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
 {
-	boost::shared_ptr<DataSetting2D> ps = boost::shared_ptr<DataSetting2D>(new DataSetting2D);
-	pSetting = ps;
+	DataSetting2D* ps = new DataSetting2D;
+	pSetting = boost::shared_ptr<DataSetting2D>(ps);
 
 	CString str;
 	m_wndCmbTargetStructureType.GetLBText(m_wndCmbTargetStructureType.GetCurSel(), str);
 	ps->targetStructureType = targetStructureTypeMapper[str];
-	m_wndEdtTargetStructureAddress.GetWindowText(ps->structureAddressFormula);
-	m_wndEdtWidth.GetWindowText(ps->widthFormula);
-	m_wndEdtHeight.GetWindowText(ps->heightFormula);
+	m_wndEdtTargetStructureAddress.GetWindowText(ps->structureAddressFormula, Count(ps->structureAddressFormula));
+	m_wndEdtWidth.GetWindowText(ps->widthFormula, Count(ps->widthFormula));
+	m_wndEdtHeight.GetWindowText(ps->heightFormula, Count(ps->heightFormula));
 	if (IsDlgButtonChecked(IDC_RAD_ADDRESSEDLINE_FIRST) == BST_CHECKED) {
 		ps->addressedLine = DataSetting2D::AddressedLine_First;
 	}else if (IsDlgButtonChecked(IDC_RAD_ADDRESSEDLINE_LAST) == BST_CHECKED) {
 		ps->addressedLine = DataSetting2D::AddressedLine_Last;
 	}
-	m_wndEdtLineOffset.GetWindowText(ps->lineOffsetFormula);
+	m_wndEdtLineOffset.GetWindowText(ps->lineOffsetFormula, Count(ps->lineOffsetFormula));
 	m_wndCmbColorFormat.GetLBText(m_wndCmbColorFormat.GetCurSel(), str);
 	ps->colorFormat = colorFormatTypeMapper[str];
 }

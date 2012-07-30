@@ -7,6 +7,9 @@ DataSetting1D::DataSetting1D()
 {
 	dataType = DataType_Int;
 	viewAuto = true;
+	_tcscpy(countFormula, _T(""));
+	_tcscpy(viewMinFormula, _T(""));
+	_tcscpy(viewMaxFormula, _T(""));
 }
 
 std::map<DataSetting1D::DataType, const std::type_info*>	typeInfoMap;
@@ -64,7 +67,9 @@ const std::type_info& DataSetting1D::GetTypeInfo() const
 ProcessSetting::ProcessSetting()
 {
 	dataSourceKeyType = DataSourceKeyType_ImageName;
-	imageName = "";
+	_tcscpy(imageName, _T(""));
+	_tcscpy(addressBaseFormula, _T(""));
+	_tcscpy(addressOffsetFormula, _T(""));
 	pid = 0;
 	addressOffsetMultiplier = 1;
 }

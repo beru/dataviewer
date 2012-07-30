@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "buffer2D.h"
-#include <boost/cstdint.hpp>
 
 namespace gl
 {
@@ -11,7 +10,7 @@ template <>
 class Buffer2D<bool> : public IBuffer2D
 {
 public:
-	typedef boost::uint_fast32_t value_type;
+	typedef uint32_t value_type;
 private:
 	size_t width_;			//!< 描画領域の横幅
 	size_t height_;			//!< 描画領域の縦幅

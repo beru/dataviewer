@@ -2,6 +2,7 @@
 
 #include "resource.h"       // main symbols
 #include "AutoCombo.h"
+#include "Setting.h"
 
 struct ProcessSetting;
 
@@ -28,8 +29,6 @@ public:
 		COMMAND_HANDLER(IDC_BTN_READ, BN_CLICKED, OnBnClickedBtnRead)
 		COMMAND_HANDLER(IDC_CHK_READ_AUTO, BN_CLICKED, OnBnClickedChkReadAuto)
 		COMMAND_HANDLER(IDC_BTN_PROCESS, BN_CLICKED, OnBnClickedBtnProcess)
-		COMMAND_HANDLER_EX(IDC_BTN_COPY, BN_CLICKED, OnBtnCopyBnClicked)
-		COMMAND_HANDLER_EX(IDC_BTN_PASTE, BN_CLICKED, OnBtnPasteBnClicked)
 		NOTIFY_HANDLER_EX(IDC_TAB, TCN_SELCHANGE, OnTabTcnSelChange)
 		REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
@@ -50,18 +49,18 @@ private:
 	LRESULT OnBnClickedChkReadAuto(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnBnClickedBtnProcess(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnTabTcnSelChange(LPNMHDR pnmh);
-	LRESULT OnBtnCopyBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl);
-	LRESULT OnBtnPasteBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 
 public:
-	void SetSetting(const ProcessSetting& setting);
-	void RetrieveSetting(ProcessSetting& setting);
+	void SetSetting(const ProcessSetting& setting, const IDataSetting* pDataSetting);
+	void RetrieveSetting(ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
 
 	bool FetchProcessData(LPCVOID pTargetAddress, void* pWriteBuffer, size_t fetchSize);
 	
-	fastdelegate::FastDelegate1<const ProcessSetting&> m_readDelegate;
-	fastdelegate::FastDelegate1<const ProcessSetting&> m_processDelegate;
-	
+	fastdelegate::FastDelegate2<const ProcessSetting&, boost::shared_ptr<IDataSetting>& > m_readDelegate;
+	fastdelegate::FastDelegate2<const ProcessSetting&, boost::shared_ptr<IDataSetting>& > m_processDelegate;
+
+	void CopyToClipboard();
+	void PasteFromClipboard();
 	
 private:
 	CAutoCombo m_wndCmbImageName;
@@ -70,8 +69,6 @@ private:
 	boost::shared_ptr<class CSettingDialog_2D> m_pDlg2D;
 	boost::shared_ptr<class CSettingDialog_TEXT> m_pDlgTEXT;
 	
-	boost::shared_ptr<ProcessSetting> m_pProcessSetting_Tmp;
-
 	void SetProcessImageNamesToComboBox();
 	void ReadData();
 	void ProcessData();

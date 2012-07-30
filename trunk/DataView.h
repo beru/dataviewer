@@ -6,6 +6,8 @@ namespace gl {
 class IBuffer2D;
 }
 
+#include "setting.h"
+
 class CDataView : public CWindowImpl<CDataView>
 {
 public:
@@ -17,9 +19,14 @@ public:
 	void ProcessData();
 	
 	BOOL PreTranslateMessage(MSG* pMsg);
-	struct ProcessSetting& GetSetting() { return *m_pSetting; }
-	void ReadData(const ProcessSetting& setting);
-	void ProcessData(const ProcessSetting& setting);
+	ProcessSetting& GetProcessSetting() {
+		return m_processSetting;
+	}
+	const IDataSetting* GetDataSetting() {
+		return m_pDataSetting.get();
+	}
+	void ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
 	
 	void ZoomIn();
 	void ZoomOut();
@@ -44,7 +51,8 @@ public:
 	END_MSG_MAP()
 	
 private:
-	boost::shared_ptr<struct ProcessSetting> m_pSetting;
+	ProcessSetting m_processSetting;
+	boost::shared_ptr<IDataSetting> m_pDataSetting;
 	std::vector<char> m_data;
 	std::vector<double> m_values;
 	
