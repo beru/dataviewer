@@ -88,6 +88,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="res\DeclareDPIAware.manifest"
 				EmbedManifest="false"
 			/>
 			<Tool
@@ -387,14 +388,6 @@
 				>
 			</File>
 			<File
-				RelativePath="common\CreateDIB32.cpp"
-				>
-			</File>
-			<File
-				RelativePath="common\CreateDIB32.h"
-				>
-			</File>
-			<File
 				RelativePath="common\FastDelegate.h"
 				>
 			</File>
@@ -468,6 +461,14 @@
 			</File>
 			<File
 				RelativePath="common\Timer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\winutil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\winutil.h"
 				>
 			</File>
 			<File

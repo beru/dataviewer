@@ -10,6 +10,7 @@
 #include "SettingDialog_TEXT.h"
 
 #include "DataViewerCommon.h"
+#include "winutil.h"
 
 enum TimerID
 {
@@ -45,8 +46,9 @@ LRESULT CSettingDialog::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	CRect rec;
 	m_wndTab.GetClientRect(rec);
 	m_wndTab.ClientToScreen(rec);
-	rec.right = rec.left + 300;
-	rec.bottom = rec.top + 250;
+	SIZE sz = GetDialogSize(IDD_DLG_SETTING, m_hWnd);
+	rec.right = rec.left + sz.cx * 0.8;
+	rec.bottom = rec.top + sz.cy * 0.5;
 
 	m_pDlg1D = boost::shared_ptr<CSettingDialog_1D>(new CSettingDialog_1D);
 	m_pDlg1D->Create(m_hWnd);

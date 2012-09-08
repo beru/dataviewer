@@ -36,64 +36,64 @@ IDR_MDICHILD            ICON                    "res\\MemoryViewerDoc.ico"
 // Dialog
 //
 
-IDD_DLG_SETTING DIALOGEX 0, 0, 193, 297
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
+IDD_DLG_SETTING DIALOGEX 0, 0, 204, 297
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
 EXSTYLE WS_EX_CLIENTEDGE
-FONT 9, "MS UI Gothic", 400, 0, 0x80
+FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
     PUSHBUTTON      "&Read",IDC_BTN_READ,11,100,35,14
-    CONTROL         "auto",IDC_CHK_READ_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,50,102,24,10
-    GROUPBOX        "target",IDC_STATIC,5,5,179,114
+    CONTROL         "auto",IDC_CHK_READ_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,50,102,30,10
+    GROUPBOX        "target",IDC_STATIC,5,5,188,114
     CONTROL         "image &name :",IDC_RAD_IMAGENAME,"Button",BS_AUTORADIOBUTTON | WS_GROUP,9,17,54,10
-    COMBOBOX        IDC_CMB_IMAGENAME,65,16,99,301,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&E",IDC_BTN_ENUMERATE,167,16,11,13
+    COMBOBOX        IDC_CMB_IMAGENAME,71,16,99,301,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&E",IDC_BTN_ENUMERATE,173,16,11,13
     CONTROL         "&PID :",IDC_RAD_PID,"Button",BS_AUTORADIOBUTTON,9,35,54,10
-    EDITTEXT        IDC_EDT_PID,65,33,60,14,ES_AUTOHSCROLL | ES_NUMBER
-    GROUPBOX        "data location",IDC_STATIC,11,49,165,46
-    LTEXT           "address &base :",IDC_STATIC,17,62,43,8
-    EDITTEXT        IDC_EDT_ADDRESS_BASE,65,58,57,14,ES_AUTOHSCROLL
-    LTEXT           "address &offset :",IDC_STATIC,17,79,47,8
-    EDITTEXT        IDC_EDT_ADDRESS_OFFSET,65,76,57,14,ES_AUTOHSCROLL
-    CTEXT           "Å~",IDC_STATIC,126,79,8,8
-    EDITTEXT        IDC_EDT_ADDRESS_OFFSET_MULTIPLIER,137,76,34,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "",IDC_SPIN_ADDRESS_OFFSET_MULTIPLIER,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,161,76,10,14
-    CONTROL         "",IDC_TAB,"SysTabControl32",TCS_BUTTONS | TCS_RAGGEDRIGHT | WS_TABSTOP,6,128,114,17
-    PUSHBUTTON      "&Process",IDC_BTN_PROCESS,129,128,35,14
+    EDITTEXT        IDC_EDT_PID,71,33,60,14,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "data location",IDC_STATIC,11,49,175,46
+    LTEXT           "address &base :",IDC_STATIC,17,62,46,8
+    EDITTEXT        IDC_EDT_ADDRESS_BASE,71,58,57,14,ES_AUTOHSCROLL
+    LTEXT           "address &offset :",IDC_STATIC,17,79,50,8
+    EDITTEXT        IDC_EDT_ADDRESS_OFFSET,71,76,57,14,ES_AUTOHSCROLL
+    CTEXT           "Å~",IDC_STATIC,132,79,8,8
+    EDITTEXT        IDC_EDT_ADDRESS_OFFSET_MULTIPLIER,143,76,34,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_ADDRESS_OFFSET_MULTIPLIER,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,167,76,10,14
+    CONTROL         "",IDC_TAB,"SysTabControl32",TCS_BUTTONS | TCS_RAGGEDRIGHT | WS_TABSTOP,6,128,130,17
+    PUSHBUTTON      "process",IDC_BTN_PROCESS,152,128,35,14
 END
 
 IDD_DLG_1D DIALOGEX 0, 0, 154, 110
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
-FONT 9, "MS UI Gothic", 400, 0, 0x80
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
-    LTEXT           "type :",IDC_STATIC,8,10,17,8
-    COMBOBOX        IDC_CMB_TYPE,44,8,88,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "count :",IDC_STATIC,8,28,20,8
-    EDITTEXT        IDC_EDT_COUNT,44,25,88,14,ES_AUTOHSCROLL
-    CONTROL         "view auto :",IDC_CHK_VIEWAUTO,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,7,44,44,10
-    LTEXT           "view min :",IDC_STATIC,8,62,30,8
-    EDITTEXT        IDC_EDT_VIEW_MIN,44,59,88,14,ES_AUTOHSCROLL
-    LTEXT           "view max :",IDC_STATIC,8,81,32,8
-    EDITTEXT        IDC_EDT_VIEW_MAX,44,78,88,14,ES_AUTOHSCROLL
+    LTEXT           "type :",IDC_STATIC,8,10,20,8
+    COMBOBOX        IDC_CMB_TYPE,49,8,88,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "count :",IDC_STATIC,8,28,24,8
+    EDITTEXT        IDC_EDT_COUNT,49,25,88,14,ES_AUTOHSCROLL
+    CONTROL         "view auto :",IDC_CHK_VIEWAUTO,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,7,44,51,10
+    LTEXT           "view min :",IDC_STATIC,8,62,33,8
+    EDITTEXT        IDC_EDT_VIEW_MIN,49,59,88,14,ES_AUTOHSCROLL
+    LTEXT           "view max :",IDC_STATIC,8,81,35,8
+    EDITTEXT        IDC_EDT_VIEW_MAX,49,78,88,14,ES_AUTOHSCROLL
 END
 
-IDD_DLG_2D DIALOGEX 0, 0, 153, 113
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
-FONT 9, "MS UI Gothic", 400, 0, 0x80
+IDD_DLG_2D DIALOGEX 0, 0, 159, 113
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
     COMBOBOX        IDC_CMB_TARGETSTRUCTURETYPE,4,6,84,217,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_EDT_TARGETSTRUCTUREADDRESS,89,5,45,14,ES_AUTOHSCROLL
     PUSHBUTTON      "&R",IDC_BTN_READTARGETSTRUCTURE,136,6,12,13
-    LTEXT           "&width :",IDC_STATIC,7,27,20,8
+    LTEXT           "&width :",IDC_STATIC,7,27,23,8
     EDITTEXT        IDC_EDT_WIDTH,58,24,47,14,ES_AUTOHSCROLL
-    LTEXT           "&height :",IDC_STATIC,7,43,22,8
+    LTEXT           "&height :",IDC_STATIC,7,43,26,8
     EDITTEXT        IDC_EDT_HEIGHT,58,41,47,14,ES_AUTOHSCROLL
-    LTEXT           "addressed &line :",IDC_STATIC,7,59,47,8
+    LTEXT           "addressed &line :",IDC_STATIC,7,59,50,8
     CONTROL         "&first line",IDC_RAD_ADDRESSEDLINE_FIRST,"Button",BS_AUTORADIOBUTTON,61,58,41,10
-    CONTROL         "&last line",IDC_RAD_ADDRESSEDLINE_LAST,"Button",BS_AUTORADIOBUTTON,109,58,39,10
-    LTEXT           "line &offset :",IDC_STATIC,7,74,34,8
+    CONTROL         "&last line",IDC_RAD_ADDRESSEDLINE_LAST,"Button",BS_AUTORADIOBUTTON,109,58,40,10
+    LTEXT           "line &offset :",IDC_STATIC,7,74,36,8
     EDITTEXT        IDC_EDT_LINEOFFSET,58,71,47,14,ES_AUTOHSCROLL
-    LTEXT           "color format:",IDC_STATIC,7,91,38,8
-    COMBOBOX        IDC_CMB_COLORFORMAT,58,89,85,220,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "color format:",IDC_STATIC,7,91,41,8
+    COMBOBOX        IDC_CMB_COLORFORMAT,58,89,86,220,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 187, 79
@@ -108,10 +108,10 @@ BEGIN
 END
 
 IDD_DLG_TEXT DIALOGEX 0, 0, 154, 110
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
-FONT 9, "MS UI Gothic", 400, 0, 0x80
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
-    LTEXT           "bytes :",-1,8,12,20,8
+    LTEXT           "bytes :",IDC_STATIC,8,12,23,8
     EDITTEXT        IDC_EDT_BYTES,44,9,88,14,ES_AUTOHSCROLL
 END
 
@@ -127,7 +127,7 @@ BEGIN
     IDD_DLG_SETTING, DIALOG
     BEGIN
         LEFTMARGIN, 5
-        RIGHTMARGIN, 184
+        RIGHTMARGIN, 200
         TOPMARGIN, 3
         BOTTOMMARGIN, 292
     END
@@ -143,7 +143,7 @@ BEGIN
     IDD_DLG_2D, DIALOG
     BEGIN
         LEFTMARGIN, 3
-        RIGHTMARGIN, 149
+        RIGHTMARGIN, 155
         TOPMARGIN, 6
         BOTTOMMARGIN, 106
     END
@@ -192,8 +192,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,7,1
- PRODUCTVERSION 1,0,7,1
+ FILEVERSION 1,0,8,1
+ PRODUCTVERSION 1,0,8,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -223,6 +223,77 @@ BEGIN
     BLOCK "VarFileInfo"
     BEGIN
         VALUE "Translation", 0x411, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  32, 32
+BEGIN
+    BUTTON      ID_FILE_NEW
+    SEPARATOR
+    BUTTON      ID_HAND
+    SEPARATOR
+    BUTTON      ID_ZOOM
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MDICHILD MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Paste",                      ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "Zoom In",                     ID_VIEW_ZOOMIN
+        MENUITEM "Zoom Out",                    ID_VIEW_ZOOMOUT
+        MENUITEM "Zoom Reset",                  ID_VIEW_ZOOMRESET
+        MENUITEM SEPARATOR
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+    END
+END
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New",                        ID_FILE_NEW
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
 END
 
@@ -358,77 +429,6 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Toolbar
-//
-
-IDR_MAINFRAME TOOLBAR  32, 32
-BEGIN
-    BUTTON      ID_FILE_NEW
-    SEPARATOR
-    BUTTON      ID_HAND
-    SEPARATOR
-    BUTTON      ID_ZOOM
-    SEPARATOR
-    BUTTON      ID_APP_ABOUT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MDICHILD MENU 
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Copy",                       ID_EDIT_COPY
-        MENUITEM "&Paste",                      ID_EDIT_PASTE
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "Zoom In",                     ID_VIEW_ZOOMIN
-        MENUITEM "Zoom Out",                    ID_VIEW_ZOOMOUT
-        MENUITEM "Zoom Reset",                  ID_VIEW_ZOOMRESET
-        MENUITEM SEPARATOR
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-    END
-    POPUP "&Window"
-    BEGIN
-        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
-        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
-    END
-END
-
-IDR_MAINFRAME MENU 
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&New",                        ID_FILE_NEW
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-    END
-END
 
 #endif    // âpåÍ (ïƒçë) resources
 /////////////////////////////////////////////////////////////////////////////
