@@ -11,6 +11,7 @@
 
 #include "SettingDialog.h"
 #include "DataView.h"
+#include "winutil.h"
 
 #include "app.h"
 
@@ -68,7 +69,8 @@ HWND CMainFrame::CreateClient()
 	// IMPORTANT! Make the splitter the parent of the MDI client
 	::SetParent(m_hWndMDIClient, m_splitter.m_hWnd);
 	
-	m_splitter.SetSplitterPos(400); // from left
+	SIZE sz = GetDialogSize(IDD_DLG_SETTING, m_pSettingDlg->m_hWnd);
+	m_splitter.SetSplitterPos(sz.cx); // from left
 	
 	// Splitter is ultimately the client of Main Frame (m_hWndClient)
 	return m_splitter.m_hWnd;
