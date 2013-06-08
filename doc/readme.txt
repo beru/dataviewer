@@ -9,3 +9,17 @@ Info Icon
 	VS2008ImageLibrary
 
 
+------------------
+
+開発環境
+	Visual Studio 2008 Standard Edition (or Higher)
+	Microsoft Visual Studio 2008 Service Pack 1
+	Microsoft Visual Studio 2008 Service Pack 1 のセキュリティ更新プログラム (KB971092)
+
+ライブラリ
+	WTL
+	http://sourceforge.net/projects/wtl/
+	
+	boost
+	http://www.boost.org/
+	
