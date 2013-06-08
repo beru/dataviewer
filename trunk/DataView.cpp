@@ -4,7 +4,7 @@
 #include "DataView.h"
 #include "Setting.h"
 
-#include "CreateDib32.h"
+#include "winutil.h"
 
 #include "gl/fixed.h"
 #include "gl/lineDrawer_Nelson.h"
