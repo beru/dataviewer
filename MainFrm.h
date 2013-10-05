@@ -1,6 +1,6 @@
 #pragma once
 
-struct ProcessSetting;
+struct SourceSetting;
 struct IDataSetting;
 
 class CMainFrame
@@ -23,15 +23,17 @@ public:
 	
 	HWND CreateClient();
 
-	void ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
-	void ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
-	void SetSettingView(const ProcessSetting& setting, const IDataSetting* pDataSetting);
+	void ReadData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ProcessData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void SetSettingView(const SourceSetting* pSrcSetting, const IDataSetting* pDataSetting);
 	void updateUI();
 	
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual BOOL OnIdle();
 	
 	BEGIN_UPDATE_UI_MAP(CMainFrame)
+		UPDATE_ELEMENT(ID_EDIT_COPY, UPDUI_MENUPOPUP)
+		UPDATE_ELEMENT(ID_EDIT_PASTE, UPDUI_MENUPOPUP)
 		UPDATE_ELEMENT(ID_VIEW_TOOLBAR, UPDUI_MENUPOPUP)
 		UPDATE_ELEMENT(ID_VIEW_STATUS_BAR, UPDUI_MENUPOPUP)
 		UPDATE_ELEMENT(ID_HAND, UPDUI_MENUPOPUP|UPDUI_TOOLBAR)

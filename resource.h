@@ -10,6 +10,9 @@
 #define IDD_DLG_1D                      202
 #define IDD_DLG_2D                      203
 #define IDD_DLG_TEXT                    204
+#define IDD_DLG_MEMORY                  207
+#define IDD_DLG_PROCESS                 207
+#define IDD_DLG_FILE                    208
 #define IDC_RAD_INT                     1000
 #define IDC_RAD_FIXED                   1001
 #define IDC_RAD_FLOAT                   1002
@@ -42,6 +45,7 @@
 #define IDC_CHK_VIEWAUTO                1025
 #define IDC_CHK_READ_AUTO               1025
 #define IDC_TAB                         1026
+#define IDC_TAB_SRC                     1027
 #define IDC_EDIT1                       1043
 #define IDC_EDT_WIDTH                   1043
 #define IDC_COMBO1                      1046
@@ -70,6 +74,7 @@
 #define IDC_BTN_COPY2                   1057
 #define IDC_BTN_PASTE                   1057
 #define IDC_EDT_BYTES                   1057
+#define IDC_EDT_FILEPATH                1058
 #define ID_UPDATE                       32772
 #define ID_VIEW_ALWAYSONTOP             32776
 #define ID_ZOOM                         32777
@@ -85,9 +90,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        206
+#define _APS_NEXT_RESOURCE_VALUE        207
 #define _APS_NEXT_COMMAND_VALUE         32789
-#define _APS_NEXT_CONTROL_VALUE         1058
+#define _APS_NEXT_CONTROL_VALUE         1059
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

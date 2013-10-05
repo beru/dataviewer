@@ -23,3 +23,15 @@ Info Icon
 	boost
 	http://www.boost.org/
 	
+	muParser
+	http://muparser.beltoforion.de/
+	
+	AutoCombo
+	http://www.codeproject.com/wtl/wtlautocompletecombo.asp
+	
+	FastDelegate
+	http://www.codeproject.com/cpp/FastDelegate.asp
+	
+	
+	
+	

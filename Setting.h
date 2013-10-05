@@ -2,10 +2,32 @@
 
 #pragma pack(push,1)
 
+struct SourceSetting
+{
+	virtual ~SourceSetting() {}
+	TCHAR	addressBaseFormula[128];
+	TCHAR	addressOffsetFormula[128];
+	int		addressOffsetMultiplier;
+};
+
 enum DataSourceKeyType
 {
 	DataSourceKeyType_ImageName,
 	DataSourceKeyType_PID,
+};
+
+struct ProcessSetting : public SourceSetting
+{
+	ProcessSetting();
+	
+	DataSourceKeyType	dataSourceKeyType;
+	TCHAR				imageName[128];
+	DWORD				pid;
+};
+
+struct FileSetting : public SourceSetting
+{
+	TCHAR	filePath[1024];
 };
 
 struct IDataSetting
@@ -48,7 +70,7 @@ struct DataSetting1D : public IDataSetting
 	int GetAddressOffset() const { return 0; }
 };
 
-struct DataSetting2D : IDataSetting
+struct DataSetting2D : public IDataSetting
 {
 	enum TargetStructureType
 	{
@@ -92,24 +114,11 @@ struct DataSetting2D : IDataSetting
 	int GetAddressOffset() const;
 };
 
-struct DataSettingTEXT : IDataSetting
+struct DataSettingTEXT : public IDataSetting
 {
 	TCHAR	bytesFormula[128];
 	size_t GetTotalBytes() const;
 	int GetAddressOffset() const;
-};
-
-struct ProcessSetting
-{
-	ProcessSetting();
-	
-	DataSourceKeyType	dataSourceKeyType;
-	TCHAR				imageName[128];
-	DWORD				pid;
-	TCHAR				addressBaseFormula[128];
-	TCHAR				addressOffsetFormula[128];
-	int					addressOffsetMultiplier;
-	
 };
 
 #pragma pack(pop)

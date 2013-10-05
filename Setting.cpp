@@ -64,17 +64,6 @@ const std::type_info& DataSetting1D::GetTypeInfo() const
 	return *typeInfoMap[dataType];
 }
 
-ProcessSetting::ProcessSetting()
-{
-	dataSourceKeyType = DataSourceKeyType_ImageName;
-	_tcscpy(imageName, _T(""));
-	_tcscpy(addressBaseFormula, _T(""));
-	_tcscpy(addressOffsetFormula, _T(""));
-	pid = 0;
-	addressOffsetMultiplier = 1;
-}
-
-
 size_t DataSetting2D::GetTotalBytes() const
 {
 	int height = abs(EvalFormula(heightFormula));
@@ -107,3 +96,14 @@ int DataSettingTEXT::GetAddressOffset() const
 {
 	return 0;
 }
+
+ProcessSetting::ProcessSetting()
+{
+	dataSourceKeyType = DataSourceKeyType_ImageName;
+	_tcscpy(imageName, _T(""));
+	_tcscpy(addressBaseFormula, _T(""));
+	_tcscpy(addressOffsetFormula, _T(""));
+	pid = 0;
+	addressOffsetMultiplier = 1;
+}
+
