@@ -19,14 +19,14 @@ public:
 	void ProcessData();
 	
 	BOOL PreTranslateMessage(MSG* pMsg);
-	ProcessSetting& GetProcessSetting() {
-		return m_processSetting;
+	SourceSetting* GetSourceSetting() {
+		return m_pSrcSetting.get();
 	}
 	const IDataSetting* GetDataSetting() {
 		return m_pDataSetting.get();
 	}
-	void ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
-	void ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ReadData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ProcessData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
 	
 	void ZoomIn();
 	void ZoomOut();
@@ -51,7 +51,7 @@ public:
 	END_MSG_MAP()
 	
 private:
-	ProcessSetting m_processSetting;
+	boost::shared_ptr<SourceSetting> m_pSrcSetting;
 	boost::shared_ptr<IDataSetting> m_pDataSetting;
 	std::vector<char> m_data;
 	std::vector<double> m_values;

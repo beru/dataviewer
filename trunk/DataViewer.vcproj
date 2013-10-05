@@ -51,7 +51,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="common\"
-				PreprocessorDefinitions="WIN32;_WINDOWS;STRICT;_DEBUG;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_WINDOWS;STRICT;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -254,6 +254,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SettingDialog_File.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SettingDialog_Process.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SettingDialog_TEXT.cpp"
 				>
 			</File>
@@ -332,6 +340,14 @@
 			</File>
 			<File
 				RelativePath=".\SettingDialog_2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SettingDialog_File.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SettingDialog_Process.h"
 				>
 			</File>
 			<File

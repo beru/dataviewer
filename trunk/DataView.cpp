@@ -109,6 +109,7 @@ LRESULT CDataView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	gl::SetupSlopeCorrectionTable(g_slopeCorrTable, SLOPE_CORR_TABLE_SIZE);
 	gl::SetupFilterTable(g_filterTable, FILTER_TABLE_SIZE, 0.75);
 	
+	m_pSrcSetting = boost::shared_ptr<ProcessSetting>(new ProcessSetting);
 	m_pDataSetting = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
 	m_scale = 1.0;
 
@@ -519,47 +520,111 @@ LRESULT CDataView::OnSize(UINT state, CSize Size)
 	return 0;
 }
 
-bool FetchProcessData(const ProcessSetting& setting, const boost::shared_ptr<IDataSetting>& pDataSetting, std::vector<char>& data)
+static
+bool fetchFileData(
+	const FileSetting& fileSetting,
+	size_t dataLength, int dataAddressOffset,
+	void* buffer
+	)
 {
-	size_t dataLength = pDataSetting->GetTotalBytes();
-	if (dataLength == 0)
+	FILE* f = _wfopen(fileSetting.filePath, L"rb");
+	if (!f) {
 		return false;
-	data.resize(dataLength);
-	void* buffer = &data[0];
+	}
+	fseek(f, dataAddressOffset, SEEK_SET);
+	fread(buffer, 1, dataLength, f);
+	fclose(f);
+	return true;
+}
 
-	int addressBase = AddressHexStrToNum(setting.addressBaseFormula);
-	int addressOffset = EvalFormula(setting.addressOffsetFormula) * setting.addressOffsetMultiplier;
-	addressOffset += pDataSetting->GetAddressOffset();
-	LPCVOID pTarget = (LPVOID) (addressBase + addressOffset);
+static
+bool fetchProcessData(
+	const ProcessSetting& processSetting,
+	size_t dataLength, int address,
+	void* buffer
+	)
+{
+	LPCVOID pTarget = (LPVOID) address;
 	bool ret = false;
-	switch (setting.dataSourceKeyType) {
+	switch (processSetting.dataSourceKeyType) {
 	case DataSourceKeyType_ImageName:
-		if (_tcslen(setting.imageName) == 0) {
+		if (_tcslen(processSetting.imageName) == 0) {
 			return false;
 		}
-		ret = ReadProcessData(setting.imageName, pTarget, buffer, dataLength);
+		ret = ReadProcessData(processSetting.imageName, pTarget, buffer, dataLength);
 		break;
 	case DataSourceKeyType_PID:
-		ret = ReadProcessData(setting.pid, pTarget, buffer, dataLength);
+		ret = ReadProcessData(processSetting.pid, pTarget, buffer, dataLength);
 		break;
 	}
 	return ret;
 }
 
-void CDataView::ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
+static
+bool fetchData(
+	const boost::shared_ptr<SourceSetting>& pSrcSetting,
+	size_t dataLength, int dataAddressOffset,
+	std::vector<char>& data
+   )
 {
-	m_processSetting = setting;
+	if (dataLength == 0)
+		return false;
+	data.resize(dataLength);
+	void* buffer = &data[0];
+
+	ptrdiff_t addressBase = AddressHexStrToNum(pSrcSetting->addressBaseFormula);
+	ptrdiff_t addressOffset = EvalFormula(pSrcSetting->addressOffsetFormula) * pSrcSetting->addressOffsetMultiplier;
+	addressOffset += dataAddressOffset;
+	ptrdiff_t address = addressBase + addressOffset;
+
+	const type_info& ti = typeid(*pSrcSetting);
+	if (ti == typeid(ProcessSetting)) {
+		fetchProcessData(
+			*((const ProcessSetting*)pSrcSetting.get()),
+			dataLength,
+			address,
+			buffer
+			);
+	}else if (ti == typeid(FileSetting)) {
+		fetchFileData(
+			*((const FileSetting*)pSrcSetting.get()),
+			dataLength,
+			address,
+			buffer
+			);
+	}else {
+		assert(false);
+	}
+
+
+	return true;
+}
+
+void CDataView::ReadData(
+	const boost::shared_ptr<SourceSetting>& pSrcSetting,
+	boost::shared_ptr<IDataSetting>& pDataSetting)
+{
+	m_pSrcSetting = pSrcSetting;
 	m_pDataSetting = pDataSetting;
-	if (FetchProcessData(setting, pDataSetting, m_data)) {
+	if (
+		fetchData(
+			pSrcSetting,
+			pDataSetting->GetTotalBytes(),
+			pDataSetting->GetAddressOffset(),
+			m_data
+		)
+	) {
 		ProcessData();
 		Invalidate();
 		UpdateWindow();
 	}
 }
 
-void CDataView::ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
+void CDataView::ProcessData(
+	const boost::shared_ptr<SourceSetting>& pSrcSetting,
+	boost::shared_ptr<IDataSetting>& pDataSetting)
 {
-	m_processSetting = setting;
+	m_pSrcSetting = pSrcSetting;
 	m_pDataSetting = pDataSetting;
 	ProcessData();
 	Invalidate();

@@ -101,6 +101,8 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 	m_CmdBar.SetMDIClient(m_hWndMDIClient);
 
 	UIAddToolBar(hWndToolBar);
+	UIEnable(ID_EDIT_COPY, FALSE);
+	UIEnable(ID_EDIT_PASTE, FALSE);
 	UISetCheck(ID_VIEW_TOOLBAR, 1);
 	UISetCheck(ID_VIEW_STATUS_BAR, 1);
 	updateUI();
@@ -194,27 +196,33 @@ LRESULT CMainFrame::OnWindowArrangeIcons(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
 	return 0;
 }
 
-void CMainFrame::SetSettingView(const ProcessSetting& setting, const IDataSetting* pDataSetting)
+void CMainFrame::SetSettingView(
+	const SourceSetting* pSrcSetting,
+	const IDataSetting* pDataSetting)
 {
-	m_pSettingDlg->SetSetting(setting, pDataSetting);
+	m_pSettingDlg->SetSetting(pSrcSetting, pDataSetting);
 	
 }
 
-void CMainFrame::ReadData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
+void CMainFrame::ReadData(
+	const boost::shared_ptr<SourceSetting>& pSrcSetting,
+	boost::shared_ptr<IDataSetting>& pDataSetting)
 {
 	if (!m_pCurView)
 		return;
 	
-	m_pCurView->ReadData(setting, pDataSetting);
+	m_pCurView->ReadData(pSrcSetting, pDataSetting);
 	
 }
 
-void CMainFrame::ProcessData(const ProcessSetting& setting, boost::shared_ptr<IDataSetting>& pDataSetting)
+void CMainFrame::ProcessData(
+	const boost::shared_ptr<SourceSetting>& pSrcSetting,
+	boost::shared_ptr<IDataSetting>& pDataSetting)
 {
 	if (!m_pCurView)
 		return;
 	
-	m_pCurView->ProcessData(setting, pDataSetting);
+	m_pCurView->ProcessData(pSrcSetting, pDataSetting);
 	
 }
 
