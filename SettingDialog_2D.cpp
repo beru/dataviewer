@@ -13,17 +13,6 @@
 
 #include "Setting.h"
 
-struct TargetStructureTypeMapper : public TwoWayMap<CString, DataSetting2D::TargetStructureType>
-{
-	TargetStructureTypeMapper()
-	{
-		map(CString("Manual"),				DataSetting2D::TargetStructureType_Manual);
-		map(CString("BITMAPINFOHEADER"),	DataSetting2D::TargetStructureType_BITMAPINFOHEADER);
-	}
-};
-
-TargetStructureTypeMapper targetStructureTypeMapper;
-
 struct ColorFormatTypeMapper : public TwoWayMap<CString, DataSetting2D::ColorFormatType>
 {
 	ColorFormatTypeMapper()
@@ -60,16 +49,11 @@ LRESULT CSettingDialog_2D::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam,
 {
 	DoDataExchange();
 	
-	m_wndCmbTargetStructureType.AddString(targetStructureTypeMapper[DataSetting2D::TargetStructureType_Manual]);
-	m_wndCmbTargetStructureType.AddString(targetStructureTypeMapper[DataSetting2D::TargetStructureType_BITMAPINFOHEADER]);
-	m_wndCmbTargetStructureType.SetCurSel(0);
-
 	for (int i=DataSetting2D::ColorFormatType_Begin; i<=DataSetting2D::ColorFormatType_End; ++i) {
 		m_wndCmbColorFormat.AddString(colorFormatTypeMapper[(DataSetting2D::ColorFormatType)i]);
 	}
 	
 	m_wndRadAddressedLineFirst.Click();
-	EnableControls(true);
 	
 	return 1;  // Let the system set the focus
 }
@@ -87,97 +71,12 @@ LRESULT CSettingDialog_2D::OnClickedCancel(WORD wNotifyCode, WORD wID, HWND hWnd
 	return 0;
 }
 
-LRESULT CSettingDialog_2D::OnCmbTargetStructureTypeCbnSelChange(WORD wNotifyCode, WORD wID, HWND hWndCtl)
-{
-	int selIdx = m_wndCmbTargetStructureType.GetCurSel();
-	CString str;
-	m_wndCmbTargetStructureType.GetLBText(selIdx, str);
-	DataSetting2D::TargetStructureType targetType = targetStructureTypeMapper[str];
-	switch (targetType) {
-	case DataSetting2D::TargetStructureType_Manual:
-		EnableControls(true);
-		break;
-	case DataSetting2D::TargetStructureType_BITMAPINFOHEADER:
-		EnableControls(false);
-		SetControlsByBITMAPINFOHEADER();
-		break;
-	}
-	return 0;
-}
-
-LRESULT CSettingDialog_2D::OnBnClickedBtnReadTargetStructure(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-	SetControlsByBITMAPINFOHEADER();
-	return 0;
-}
-
-void CSettingDialog_2D::SetControlsByBITMAPINFOHEADER()
-{
-	if (!m_dataFetch_delegate)
-		return;
-
-	CString str;
-	m_wndEdtTargetStructureAddress.GetWindowText(str);
-	size_t address = AddressHexStrToNum(str);
-	
-	BITMAPINFOHEADER bmpih;
-	if (!m_dataFetch_delegate((LPCVOID)address, (void*)&bmpih, sizeof(bmpih)))
-		return;
-	
-	convert(bmpih.biWidth, str);		m_wndEdtWidth.SetWindowText(str);
-	convert(abs(bmpih.biHeight), str);	m_wndEdtHeight.SetWindowText(str);
-	size_t lineBytes = 0;
-	DataSetting2D::ColorFormatType colorFormat;
-	switch (bmpih.biBitCount) {
-	case 24:
-		lineBytes = (3*bmpih.biWidth+3)&~3;
-		colorFormat = DataSetting2D::ColorFormatType_B8G8R8;
-		break;
-	case 32:
-		lineBytes = (4*bmpih.biWidth);
-		colorFormat = DataSetting2D::ColorFormatType_B8G8R8A8;
-		break;
-	}
-	
-	int lineOffset = lineBytes;;
-	if (bmpih.biHeight >= 0) {
-		CheckDlgButton(IDC_RAD_ADDRESSEDLINE_FIRST, BST_UNCHECKED);
-		CheckDlgButton(IDC_RAD_ADDRESSEDLINE_LAST, BST_CHECKED);
-		lineOffset = -lineOffset;
-	}else {
-		CheckDlgButton(IDC_RAD_ADDRESSEDLINE_FIRST, BST_CHECKED);
-		CheckDlgButton(IDC_RAD_ADDRESSEDLINE_LAST, BST_UNCHECKED);
-	}
-	
-	convert(lineOffset, str);
-	m_wndEdtLineOffset.SetWindowText(str);
-	m_wndCmbColorFormat.SelectString(-1, colorFormatTypeMapper[colorFormat]);
-	
-}
-
-void CSettingDialog_2D::EnableControls(bool bEnable)
-{
-	BOOL enable = bEnable ? TRUE : FALSE;
-	m_wndEdtTargetStructureAddress.EnableWindow(!enable);
-	m_wndBtnReadTargetStructure.EnableWindow(!enable);
-
-	m_wndEdtWidth.EnableWindow(enable);
-	m_wndEdtHeight.EnableWindow(enable);
-	m_wndRadAddressedLineFirst.EnableWindow(enable);
-	m_wndRadAddressedLineLast.EnableWindow(enable);
-	m_wndEdtLineOffset.EnableWindow(enable);
-	m_wndCmbColorFormat.EnableWindow(enable);
-}
-
 void CSettingDialog_2D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
 {
 	DataSetting2D* ps = new DataSetting2D;
 	pSetting = boost::shared_ptr<DataSetting2D>(ps);
 
 	CString str;
-	m_wndCmbTargetStructureType.GetLBText(m_wndCmbTargetStructureType.GetCurSel(), str);
-	ps->targetStructureType = targetStructureTypeMapper[str];
-	m_wndEdtTargetStructureAddress.GetWindowText(ps->structureAddressFormula, Count(ps->structureAddressFormula));
 	m_wndEdtWidth.GetWindowText(ps->widthFormula, Count(ps->widthFormula));
 	m_wndEdtHeight.GetWindowText(ps->heightFormula, Count(ps->heightFormula));
 	if (IsDlgButtonChecked(IDC_RAD_ADDRESSEDLINE_FIRST) == BST_CHECKED) {
@@ -193,16 +92,6 @@ void CSettingDialog_2D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSettin
 void CSettingDialog_2D::SetSetting(const DataSetting2D& setting)
 {
 	CString str;
-	m_wndCmbTargetStructureType.SelectString(-1, targetStructureTypeMapper[setting.targetStructureType]);
-	switch (setting.targetStructureType) {
-	case DataSetting2D::TargetStructureType_Manual:
-		EnableControls(true);
-		break;
-	case DataSetting2D::TargetStructureType_BITMAPINFOHEADER:
-		EnableControls(false);
-		break;
-	}
-	m_wndEdtTargetStructureAddress.SetWindowText(setting.structureAddressFormula);
 	m_wndEdtWidth.SetWindowTextW(setting.widthFormula);
 	m_wndEdtHeight.SetWindowTextW(setting.heightFormula);
 	switch (setting.addressedLine) {
