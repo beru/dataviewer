@@ -23,7 +23,11 @@ double EvalFormula(LPCTSTR formula)
 		std::string s = ConvertToMString(formula);
 		parser.SetExpr(s.c_str());
 	}
-	return parser.Eval();
+	try {
+		return parser.Eval();
+	}catch (...) {
+		return 0;
+	}
 }
 
 bool ReadProcessData(HANDLE hProcess, LPCVOID pTarget, void* buffer, size_t fetchSize)

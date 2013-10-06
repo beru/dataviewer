@@ -66,23 +66,27 @@ const std::type_info& DataSetting1D::GetTypeInfo() const
 
 size_t DataSetting2D::GetTotalBytes() const
 {
+	int width = abs(EvalFormula(widthFormula));
 	int height = abs(EvalFormula(heightFormula));
-	int lineOffset = EvalFormula(lineOffsetFormula);
-	return height * abs(lineOffset);
+	int lineStride = bUseLineStride ? EvalFormula(lineStrideFormula) : (width * GetByteSize(colorFormat));
+	return height * abs(lineStride);
 }
 
 int DataSetting2D::GetAddressOffset() const
 {
-	int lineOffset = EvalFormula(lineOffsetFormula);
+	if (!bUseLineStride) {
+		return 0;
+	}
+	int lineStride = EvalFormula(lineStrideFormula);
 	int height = EvalFormula(heightFormula);
 	if (addressedLine == AddressedLine_First) {
-		if (lineOffset < 0) {
-			return lineOffset * (height - 1);
+		if (lineStride < 0) {
+			return lineStride * (height - 1);
 		}else {
 			return 0;
 		}
 	}else {
-		return -1 * lineOffset * (height - 1);
+		return -1 * lineStride * (height - 1);
 	}
 }
 
@@ -107,3 +111,53 @@ ProcessSetting::ProcessSetting()
 	addressOffsetMultiplier = 1;
 }
 
+size_t GetByteSize(ColorFormatType t)
+{
+	switch (t) {
+	case ColorFormatType_B5G6R5:
+		return 2;
+	case ColorFormatType_B8G8R8:
+		return 3;
+	case ColorFormatType_B8G8R8A8:
+	case ColorFormatType_F32:
+		return 4;
+	case ColorFormatType_F64:
+		return 8;
+	case ColorFormatType_1:
+		return 0;
+		break;
+	case ColorFormatType_U8:
+	case ColorFormatType_S8:
+		return 1;
+	case ColorFormatType_U16:
+	case ColorFormatType_S16:
+		return 2;
+	case ColorFormatType_U32:
+	case ColorFormatType_S32:
+		return 4;
+	default:
+		return 0;
+	}
+}
+
+bool IsSingleComponent(ColorFormatType t)
+{
+	switch (t) {
+	case ColorFormatType_B5G6R5:
+	case ColorFormatType_B8G8R8:
+	case ColorFormatType_B8G8R8A8:
+		return false;
+	case ColorFormatType_F32:
+	case ColorFormatType_F64:
+	case ColorFormatType_1:
+	case ColorFormatType_U8:
+	case ColorFormatType_U16:
+	case ColorFormatType_U32:
+	case ColorFormatType_S8:
+	case ColorFormatType_S16:
+	case ColorFormatType_S32:
+		return true;
+	default:
+		return false;
+	}
+}

@@ -47,6 +47,29 @@ struct ColorConverter
 
 };
 
+template <typename TargetColorT>
+struct ColorConverterMinMax
+{
+	ColorConverterMinMax(double minimum, double maximum)
+		:
+		minimum(minimum),
+		maximum(maximum),
+		invRange(1.0 / (maximum - minimum))
+	{
+	}
+	__forceinline TargetColorT operator () (double from)
+	{
+		double nv = (from - minimum) * invRange;
+		nv = max(0.0, nv);
+		nv = min(1.0, nv);
+		return convert<TargetColorT>(nv);
+	}
+	
+	double minimum;
+	double maximum;
+	double invRange;
+};
+
 template <typename NumericT, typename ValueT, size_t tableSize>
 struct TableLookupHelper
 {
