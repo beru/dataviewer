@@ -34,4 +34,9 @@ Windows‚Ì‹@”\‚ðŽg‚Á‚½ƒNƒŠƒbƒvƒ{[ƒh‹@”\‚ðŽÀ‘•BƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ðÄ“x‹N“®‚µ‚½Žž‚
 
 ƒvƒƒZƒXƒƒ‚ƒŠ‚¾‚¯‚Å‚È‚­Aƒtƒ@ƒCƒ‹‚©‚ç‚Ìƒf[ƒ^“Ç‚Ýž‚Ý‚É‘Î‰ž
 ƒNƒŠƒbƒvƒ{[ƒh‹@”\‚Ì”pŽ~iŒã‚Å•œŠˆ—\’èj
-
+ƒ}ƒEƒX‚ÅƒXƒNƒ[ƒ‹‚âŠg‘åk¬‘€ì‚ªo—ˆ‚È‚­‚È‚Á‚Ä‚¢‚½–â‘è‚ÌC³
+—pŒê line offset ‚ð line stride ‚É•ÏX
+pixel stride Ý’è‹@”\‚ð’Ç‰Á
+ƒVƒ“ƒOƒ‹ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒf[ƒ^—p‚É minimum ‚Æ maximum ’l‚ÌÝ’è‚ð’Ç‰Á‚µ‚Ä•`‰æ‚ð’²®o—ˆ‚é‚æ‚¤‚É‚µ‚½
+•„†•t‚«‚Ì®”Œ^‚ð’Ç‰Á
+VisualStyle‘Î‰ž
