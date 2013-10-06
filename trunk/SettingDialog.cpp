@@ -72,7 +72,6 @@ LRESULT CSettingDialog::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	m_pDlg2D = boost::shared_ptr<CSettingDialog_2D>(new CSettingDialog_2D);
 	m_pDlg2D->Create(m_hWnd);
 	m_pDlg2D->MoveWindow(rec);
-//	m_pDlg2D->m_dataFetch_delegate.bind(this, &CSettingDialog::FetchProcessData);
 
 	m_pDlgTEXT = boost::shared_ptr<CSettingDialog_TEXT>(new CSettingDialog_TEXT);
 	m_pDlgTEXT->Create(m_hWnd);

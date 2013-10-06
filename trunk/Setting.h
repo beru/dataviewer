@@ -72,12 +72,6 @@ struct DataSetting1D : public IDataSetting
 
 struct DataSetting2D : public IDataSetting
 {
-	enum TargetStructureType
-	{
-		TargetStructureType_Manual,
-		TargetStructureType_BITMAPINFOHEADER,
-	};
-	
 	enum AddressedLine
 	{
 		AddressedLine_First,
@@ -101,9 +95,6 @@ struct DataSetting2D : public IDataSetting
 		ColorFormatType_End = ColorFormatType_32,
 	};
 
-	TargetStructureType	targetStructureType;
-	TCHAR	structureAddressFormula[128];
-	
 	TCHAR	widthFormula[128];
 	TCHAR	heightFormula[128];
 	TCHAR	lineOffsetFormula[128];
