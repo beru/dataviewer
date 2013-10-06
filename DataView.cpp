@@ -19,11 +19,6 @@ typedef gl::fixed<16, unsigned short int> Fixed16;
 typedef gl::fixed<32, unsigned int> Fixed32;
 typedef gl::Color4< gl::ColorBGRA<Fixed8> > ColorB8G8R8A8;
 typedef gl::Color3< gl::ColorBGR<Fixed8> > ColorB8G8R8;
-typedef gl::Color1<float> Color32F;
-typedef gl::Color1<double> Color64F;
-typedef gl::Color1<Fixed8> ColorFixed8;
-typedef gl::Color1<Fixed16> ColorFixed16;
-typedef gl::Color1<Fixed32> ColorFixed32;
 
 #define STATIC_ASSERT(expr) { char dummy[(expr) ? 1 : 0]; }
 
@@ -45,6 +40,7 @@ struct ColorB5G6R5
 template <typename T>
 ColorB8G8R8A8 convert(ColorB5G6R5 from)
 {
+	STATIC_ASSERT(sizeof(ColorB5G6R5) == 2);
 	ColorB8G8R8A8 to;
 	to.r.value = from.r << 3;
 	to.g.value = from.g << 2;
@@ -52,7 +48,16 @@ ColorB8G8R8A8 convert(ColorB5G6R5 from)
 	return to;
 }
 
-gl::ColorConverter<ColorB8G8R8A8> colorConverter;
+template <typename T>
+ColorB8G8R8A8 convert(double from)
+{
+	ColorB8G8R8A8 to;
+	uint8_t v = (from * 255.0 + 0.5);
+	to.r.value = v;
+	to.g.value = v;
+	to.b.value = v;
+	return to;
+}
 
 #include "MathUtil.h"
 
@@ -72,7 +77,14 @@ NumericT g_filterTable[FILTER_TABLE_SIZE];
 
 bool CDataView::isMouseClicked()
 {
-	return GetCapture() == m_hWnd && GetKeyState(GetSystemMetrics(SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON) < 0;
+	HWND hWndCap = GetCapture();
+	if (hWndCap == m_hWnd) {
+		const int chkBtn = GetSystemMetrics(SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON;
+		SHORT state = GetAsyncKeyState(chkBtn);
+		bool bClicked = state < 0;
+		return bClicked;
+	}
+	return false;
 }
 
 CDataView::CDataView()
@@ -213,51 +225,40 @@ void CDataView::ProcessAs2D()
 	int height = EvalFormula(setting.heightFormula);
 	if (height <= 0)
 		return;
-	int lineOffset = EvalFormula(setting.lineOffsetFormula);
-	if (lineOffset == 0)
-		return;
-
-	size_t lineBytes = 0;
-	switch (setting.colorFormat) {
-	case DataSetting2D::ColorFormatType_B5G6R5:
-		lineBytes = width * 2;
-		break;
-	case DataSetting2D::ColorFormatType_B8G8R8:
-		lineBytes = width * 3;
-		break;
-	case DataSetting2D::ColorFormatType_B8G8R8A8:
-	case DataSetting2D::ColorFormatType_32F:
-		lineBytes = width * 4;
-		break;
-	case DataSetting2D::ColorFormatType_64F:
-		lineBytes = width * 8;
-		break;
-	case DataSetting2D::ColorFormatType_1:
-		lineBytes = width / 8 + ((width % 8) ? 1 : 0);
-		break;
-	case DataSetting2D::ColorFormatType_8:
-		lineBytes = width;
-		break;
-	case DataSetting2D::ColorFormatType_16:
-		lineBytes = width * 2;
-		break;
-	case DataSetting2D::ColorFormatType_32:
-		lineBytes = width * 4;
-		break;
-	default:
-		return;
+	
+	int pixelStride;
+	size_t colorFormatPixelSize = GetByteSize(setting.colorFormat);
+	if (setting.bUsePixelStride) {
+		pixelStride = EvalFormula(setting.pixelStrideFormula);
+		if (pixelStride <= 0 || pixelStride < colorFormatPixelSize) {
+			return;
+		}
+	}else {
+		pixelStride = colorFormatPixelSize;
 	}
-	if (abs(lineOffset) < lineBytes)
+	
+	size_t lineBytes = 0;
+	if (setting.colorFormat == ColorFormatType_1) {
+		lineBytes = width / 8 + ((width % 8) ? 1 : 0);
+	}else {
+		lineBytes = width * pixelStride;
+	}
+
+	int lineStride = setting.bUseLineStride ? EvalFormula(setting.lineStrideFormula) : lineBytes;
+	if (lineStride == 0)
 		return;
-	if (abs(lineOffset)*height != dataBytes)
+	
+	if (abs(lineStride) < lineBytes)
+		return;
+	if (abs(lineStride)*height != dataBytes)
 		return;
 	
 	const char* pFirstLine = NULL;
 	switch (setting.addressedLine) {
 	case DataSetting2D::AddressedLine_Last:
 	case DataSetting2D::AddressedLine_First:
-		if (lineOffset < 0) {
-			pFirstLine = pData + -lineOffset * (height - 1);
+		if (lineStride < 0) {
+			pFirstLine = pData + -lineStride * (int)(height - 1);
 		}else {
 			pFirstLine = pData;
 		}
@@ -277,38 +278,52 @@ void CDataView::ProcessAs2D()
 	}
 	m_imgWidth = width;
 	m_imgHeight = height;
-	
-	STATIC_ASSERT(sizeof(ColorB5G6R5) == 2);
-
 	gl::Buffer2D<ColorB8G8R8A8>& img = *(gl::Buffer2D<ColorB8G8R8A8>*)m_pImage;
-	switch (setting.colorFormat) {
-	case DataSetting2D::ColorFormatType_B5G6R5:
-		gl::BitBlockTransfer(gl::Buffer2D<ColorB5G6R5>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_B8G8R8:
-		gl::BitBlockTransfer(gl::Buffer2D<ColorB8G8R8>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_B8G8R8A8:
-		gl::BitBlockTransfer(gl::Buffer2D<ColorB8G8R8A8>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_32F:
-		gl::BitBlockTransfer(gl::Buffer2D<Color32F>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_64F:
-		gl::BitBlockTransfer(gl::Buffer2D<Color64F>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_1:
-		gl::BitBlockTransfer(gl::Buffer2D<bool>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_8:
-		gl::BitBlockTransfer(gl::Buffer2D<ColorFixed8>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_16:
-		gl::BitBlockTransfer(gl::Buffer2D<ColorFixed16>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
-	case DataSetting2D::ColorFormatType_32:
-		gl::BitBlockTransfer(gl::Buffer2D<ColorFixed32>(width, height, lineOffset, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
-		break;
+	
+	if (setting.colorFormat != ColorFormatType_1 && IsSingleComponent(setting.colorFormat)) {
+		gl::ColorConverterMinMax<ColorB8G8R8A8> colorConverter(EvalFormula(setting.minimumFormula), EvalFormula(setting.maximumFormula));
+		switch (setting.colorFormat) {
+		case ColorFormatType_F32:
+			gl::BitBlockTransfer(gl::Buffer2D<float>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_F64:
+			gl::BitBlockTransfer(gl::Buffer2D<double>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_U8:
+			gl::BitBlockTransfer(gl::Buffer2D<uint8_t>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_U16:
+			gl::BitBlockTransfer(gl::Buffer2D<uint16_t>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_U32:
+			gl::BitBlockTransfer(gl::Buffer2D<uint32_t>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_S8:
+			gl::BitBlockTransfer(gl::Buffer2D<int8_t>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_S16:
+			gl::BitBlockTransfer(gl::Buffer2D<int16_t>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_S32:
+			gl::BitBlockTransfer(gl::Buffer2D<int32_t>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		}
+	}else {
+		gl::ColorConverter<ColorB8G8R8A8> colorConverter;
+		switch (setting.colorFormat) {
+		case ColorFormatType_1:
+			gl::BitBlockTransfer(gl::Buffer2D<bool>(width, height, lineStride, (void*)pFirstLine), img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_B5G6R5:
+			gl::BitBlockTransfer(gl::Buffer2D<ColorB5G6R5>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_B8G8R8:
+			gl::BitBlockTransfer(gl::Buffer2D<ColorB8G8R8>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		case ColorFormatType_B8G8R8A8:
+			gl::BitBlockTransfer(gl::Buffer2D<ColorB8G8R8A8>(width, height, lineStride, (void*)pFirstLine), pixelStride, img, 0,0,0,0,width,height, colorConverter);
+			break;
+		}
 	}
 
 }
@@ -563,7 +578,7 @@ bool fetchProcessData(
 static
 bool fetchData(
 	const boost::shared_ptr<SourceSetting>& pSrcSetting,
-	size_t dataLength, int dataAddressOffset,
+	size_t dataLength,
 	std::vector<char>& data
    )
 {
@@ -574,7 +589,6 @@ bool fetchData(
 
 	ptrdiff_t addressBase = AddressHexStrToNum(pSrcSetting->addressBaseFormula);
 	ptrdiff_t addressOffset = EvalFormula(pSrcSetting->addressOffsetFormula) * pSrcSetting->addressOffsetMultiplier;
-	addressOffset += dataAddressOffset;
 	ptrdiff_t address = addressBase + addressOffset;
 
 	const type_info& ti = typeid(*pSrcSetting);
@@ -610,7 +624,6 @@ void CDataView::ReadData(
 		fetchData(
 			pSrcSetting,
 			pDataSetting->GetTotalBytes(),
-			pDataSetting->GetAddressOffset(),
 			m_data
 		)
 	) {

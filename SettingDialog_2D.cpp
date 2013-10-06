@@ -13,20 +13,23 @@
 
 #include "Setting.h"
 
-struct ColorFormatTypeMapper : public TwoWayMap<CString, DataSetting2D::ColorFormatType>
+struct ColorFormatTypeMapper : public TwoWayMap<CString, ColorFormatType>
 {
 	ColorFormatTypeMapper()
 	{
-		map(CString("B5G6R5"),		DataSetting2D::ColorFormatType_B5G6R5);
-		map(CString("B8G8R8"),		DataSetting2D::ColorFormatType_B8G8R8);
-		map(CString("B8G8R8A8"),	DataSetting2D::ColorFormatType_B8G8R8A8);
-//		map(CString("16F"),			DataSetting2D::ColorFormatType_16F);
-		map(CString("32F"),			DataSetting2D::ColorFormatType_32F);
-		map(CString("64F"),			DataSetting2D::ColorFormatType_64F);
-		map(CString("1"),			DataSetting2D::ColorFormatType_1);
-		map(CString("8"),			DataSetting2D::ColorFormatType_8);
-		map(CString("16"),			DataSetting2D::ColorFormatType_16);
-		map(CString("32"),			DataSetting2D::ColorFormatType_32);
+		map(CString("B5G6R5"),		ColorFormatType_B5G6R5);
+		map(CString("B8G8R8"),		ColorFormatType_B8G8R8);
+		map(CString("B8G8R8A8"),	ColorFormatType_B8G8R8A8);
+//		map(CString("F16"),			ColorFormatType_F16);
+		map(CString("F32"),			ColorFormatType_F32);
+		map(CString("F64"),			ColorFormatType_F64);
+		map(CString("1"),			ColorFormatType_1);
+		map(CString("U8"),			ColorFormatType_U8);
+		map(CString("U16"),			ColorFormatType_U16);
+		map(CString("U32"),			ColorFormatType_U32);
+		map(CString("S8"),			ColorFormatType_S8);
+		map(CString("S16"),			ColorFormatType_S16);
+		map(CString("S32"),			ColorFormatType_S32);
 	}
 };
 
@@ -49,12 +52,10 @@ LRESULT CSettingDialog_2D::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam,
 {
 	DoDataExchange();
 	
-	for (int i=DataSetting2D::ColorFormatType_Begin; i<=DataSetting2D::ColorFormatType_End; ++i) {
-		m_wndCmbColorFormat.AddString(colorFormatTypeMapper[(DataSetting2D::ColorFormatType)i]);
+	for (int i=ColorFormatType_Begin; i<=ColorFormatType_End; ++i) {
+		m_wndCmbColorFormat.AddString(colorFormatTypeMapper[(ColorFormatType)i]);
 	}
-	
 	m_wndRadAddressedLineFirst.Click();
-	
 	return 1;  // Let the system set the focus
 }
 
@@ -71,6 +72,13 @@ LRESULT CSettingDialog_2D::OnClickedCancel(WORD wNotifyCode, WORD wID, HWND hWnd
 	return 0;
 }
 
+ColorFormatType CSettingDialog_2D::getColorFormat()
+{
+	CString str;
+	m_wndCmbColorFormat.GetLBText(m_wndCmbColorFormat.GetCurSel(), str);
+	return colorFormatTypeMapper[str];
+}
+
 void CSettingDialog_2D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
 {
 	DataSetting2D* ps = new DataSetting2D;
@@ -84,9 +92,14 @@ void CSettingDialog_2D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSettin
 	}else if (IsDlgButtonChecked(IDC_RAD_ADDRESSEDLINE_LAST) == BST_CHECKED) {
 		ps->addressedLine = DataSetting2D::AddressedLine_Last;
 	}
-	m_wndEdtLineOffset.GetWindowText(ps->lineOffsetFormula, Count(ps->lineOffsetFormula));
-	m_wndCmbColorFormat.GetLBText(m_wndCmbColorFormat.GetCurSel(), str);
-	ps->colorFormat = colorFormatTypeMapper[str];
+	ps->colorFormat = getColorFormat();
+
+	ps->bUsePixelStride = (IsDlgButtonChecked(IDC_CHK_PIXEL_STRIDE) == BST_CHECKED);
+	m_wndEdtPixelStride.GetWindowText(ps->pixelStrideFormula, Count(ps->pixelStrideFormula));
+	ps->bUseLineStride = (IsDlgButtonChecked(IDC_CHK_LINE_STRIDE) == BST_CHECKED);
+	m_wndEdtLineStride.GetWindowText(ps->lineStrideFormula, Count(ps->lineStrideFormula));
+	m_wndEdtMinimum.GetWindowText(ps->minimumFormula, Count(ps->minimumFormula));
+	m_wndEdtMaximum.GetWindowText(ps->maximumFormula, Count(ps->maximumFormula));
 }
 
 void CSettingDialog_2D::SetSetting(const DataSetting2D& setting)
@@ -104,7 +117,55 @@ void CSettingDialog_2D::SetSetting(const DataSetting2D& setting)
 		CheckDlgButton(IDC_RAD_ADDRESSEDLINE_LAST, BST_CHECKED);
 		break;
 	}
-	m_wndEdtLineOffset.SetWindowTextW(setting.lineOffsetFormula);
 	m_wndCmbColorFormat.SelectString(-1, colorFormatTypeMapper[setting.colorFormat]);
+	CheckDlgButton(IDC_CHK_PIXEL_STRIDE, setting.bUsePixelStride);
+	m_wndEdtPixelStride.EnableWindow(setting.bUsePixelStride);
+	m_wndEdtPixelStride.SetWindowTextW(setting.pixelStrideFormula);
+	CheckDlgButton(IDC_CHK_LINE_STRIDE, setting.bUseLineStride);
+	m_wndEdtLineStride.EnableScrollBar(setting.bUseLineStride);
+	m_wndEdtLineStride.SetWindowTextW(setting.lineStrideFormula);
+	m_wndEdtMinimum.SetWindowTextW(setting.minimumFormula);
+	m_wndEdtMaximum.SetWindowTextW(setting.maximumFormula);
+	setMinMaxEditsEnability();
 }
 
+LRESULT CSettingDialog_2D::OnBnClickedChkPixelStride(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	GetDlgItem(IDC_EDT_PIXEL_STRIDE).EnableWindow(IsDlgButtonChecked(IDC_CHK_PIXEL_STRIDE) == BST_CHECKED);
+	return 0;
+}
+
+LRESULT CSettingDialog_2D::OnBnClickedChkLineStride(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	GetDlgItem(IDC_EDT_LINE_STRIDE).EnableWindow(IsDlgButtonChecked(IDC_CHK_LINE_STRIDE) == BST_CHECKED);
+	return 0;
+}
+
+LRESULT CSettingDialog_2D::OnBnClickedButton4(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	return 0;
+}
+
+LRESULT CSettingDialog_2D::OnBnClickedButton16(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	return 0;
+}
+
+LRESULT CSettingDialog_2D::OnBnClickedButton64(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	return 0;
+}
+
+void CSettingDialog_2D::setMinMaxEditsEnability()
+{
+	ColorFormatType fmt = getColorFormat();
+	BOOL enable = (fmt == ColorFormatType_1) ? false : IsSingleComponent(fmt);
+	m_wndEdtMinimum.EnableWindow(enable);
+	m_wndEdtMaximum.EnableWindow(enable);
+}
+
+LRESULT CSettingDialog_2D::OnCbnSelchangeCmbColorformat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	setMinMaxEditsEnability();
+	return 0;
+}

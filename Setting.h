@@ -70,6 +70,29 @@ struct DataSetting1D : public IDataSetting
 	int GetAddressOffset() const { return 0; }
 };
 
+enum ColorFormatType
+{
+	ColorFormatType_B5G6R5,
+	ColorFormatType_B8G8R8,
+	ColorFormatType_B8G8R8A8,
+//		ColorFormatType_16F,
+	ColorFormatType_F32,
+	ColorFormatType_F64,
+	ColorFormatType_1,
+	ColorFormatType_U8,
+	ColorFormatType_U16,
+	ColorFormatType_U32,
+	ColorFormatType_S8,
+	ColorFormatType_S16,
+	ColorFormatType_S32,
+
+	ColorFormatType_Begin = 0,
+	ColorFormatType_End = ColorFormatType_S32,
+};
+
+size_t GetByteSize(ColorFormatType t);
+bool IsSingleComponent(ColorFormatType t);
+
 struct DataSetting2D : public IDataSetting
 {
 	enum AddressedLine
@@ -78,28 +101,16 @@ struct DataSetting2D : public IDataSetting
 		AddressedLine_Last,
 	};
 	
-	enum ColorFormatType
-	{
-		ColorFormatType_B5G6R5,
-		ColorFormatType_B8G8R8,
-		ColorFormatType_B8G8R8A8,
-//		ColorFormatType_16F,
-		ColorFormatType_32F,
-		ColorFormatType_64F,
-		ColorFormatType_1,
-		ColorFormatType_8,
-		ColorFormatType_16,
-		ColorFormatType_32,
-
-		ColorFormatType_Begin = 0,
-		ColorFormatType_End = ColorFormatType_32,
-	};
-
 	TCHAR	widthFormula[128];
 	TCHAR	heightFormula[128];
-	TCHAR	lineOffsetFormula[128];
+	bool	bUsePixelStride;
+	TCHAR	pixelStrideFormula[128];
+	bool	bUseLineStride;
+	TCHAR	lineStrideFormula[128];
 	AddressedLine	addressedLine;
 	ColorFormatType	colorFormat;
+	TCHAR	minimumFormula[128];
+	TCHAR	maximumFormula[128];
 
 	size_t GetTotalBytes() const;
 	int GetAddressOffset() const;

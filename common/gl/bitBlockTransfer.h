@@ -40,7 +40,8 @@ void BitBlockTransfer(
 // TODO: need to fix. runs too slow...
 template <typename ConverterT, typename SrcColorT, typename TargetColorT>
 void BitBlockTransfer(
-	const Buffer2D<SrcColorT>& src, Buffer2D<TargetColorT>& target,
+	const Buffer2D<SrcColorT>& src, size_t pixelStride,
+	Buffer2D<TargetColorT>& target,
 	int srcX, int srcY, int targetX, int targetY,
 	size_t width, size_t height,
 	ConverterT& converter
@@ -104,7 +105,8 @@ void BitBlockTransfer(
 		pTarget2 = pTarget;
 		for (size_t x=0; x<width; ++x) {
 			*pTarget2 = converter(*pSrc2);
-			++pSrc2;
+			pSrc2 = (const SrcColorT*) (((const char*)pSrc2)+pixelStride);
+//			++pSrc2;
 			++pTarget2;
 		}
 		OffsetPtr(pSrc, srcLineOffset);
