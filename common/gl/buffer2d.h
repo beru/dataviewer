@@ -17,7 +17,7 @@ public:
 private:
 	size_t width_;			//!< 描画領域の横幅
 	size_t height_;			//!< 描画領域の縦幅
-	int lineOffset_;		//!< Y座標を1つ上げるのに必要なバイト数。
+	int lineStride_;		//!< Y座標を1つ上げるのに必要なバイト数。
 	unsigned char* pBuff_;	//!< 描画領域として確保した領域のアドレスを保持するポインタ、座標（0, 0)を指す。
 	
 	bool allocated_;	//!< このinstanceがbuff_を確保したのかどうか
@@ -27,7 +27,7 @@ private:
 	{
 		assert(x+1 <= width_);
 		assert(y+1 <= height_);
-		return lineOffset_*y + sizeof(ColorT)*x;
+		return lineStride_*y + sizeof(ColorT)*x;
 	}
 	
 public:
@@ -61,13 +61,13 @@ public:
 	}
 	
 	//! 内部で描画領域を確保しないで、外から渡ってきた座標を利用
-	Buffer2D(size_t width, size_t height, int lineOffset, void* pBuff)
+	Buffer2D(size_t width, size_t height, int lineStride, void* pBuff)
 	{
 		width_		= width;
 		height_		= height;
-		lineOffset_	= lineOffset;
+		lineStride_	= lineStride;
 
-		assert(abs(lineOffset_) >= width * sizeof(ColorT));
+		assert(abs(lineStride_) >= width * sizeof(ColorT));
 		pBuff_		= (unsigned char*) pBuff;
 		allocated_	= false;
 	}
@@ -86,7 +86,7 @@ public:
 
 	size_t	GetWidth() const								{	return width_;						}
 	size_t	GetHeight() const								{	return height_;						}
-	int		GetLineOffset() const 							{	return lineOffset_;					}
+	int		GetLineStride() const 							{	return lineStride_;					}
 	
 	void	SetPixel(size_t x, size_t y, ColorT col)		{	*(ColorT*)(pBuff_ + buffPos(x,y)) = col;	}
 	ColorT	GetPixel(size_t x, size_t y) const				{	return *(ColorT*)(pBuff_ + buffPos(x,y));	}
@@ -227,8 +227,8 @@ template <typename ColorT, typename ModifierT>
 void Buffer2D_ModifyRect(Buffer2D<ColorT>& buff, size_t x, size_t y, size_t width, size_t height, ModifierT& modifier)
 {
 	ColorT* pLine = buff.GetPixelPtr(x, y);
-	int lineOffset = buff.GetLineOffset();
-	modifier(x,y,width,height, pLine, lineOffset);
+	int lineStride = buff.GetLineStride();
+	modifier(x,y,width,height, pLine, lineStride);
 }
 
 }	// namespace gl

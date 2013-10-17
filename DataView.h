@@ -31,6 +31,8 @@ public:
 	void ZoomIn();
 	void ZoomOut();
 	void ZoomReset();
+
+	void CopyImage();
 	
 	BEGIN_MSG_MAP(CDataView)
 		MESSAGE_HANDLER(WM_PAINT, OnPaint)

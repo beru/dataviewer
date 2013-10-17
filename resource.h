@@ -63,7 +63,6 @@
 #define IDC_RAD_ADDRESSEDLINE_FIRST     1050
 #define IDC_EDT_TARGETADDRESS           1051
 #define IDC_EDT_TARGETSTRUCTUREADDRESS  1051
-#define IDC_EDT_HEIGHT2                 1051
 #define IDC_EDT_MAXIMUM                 1051
 #define IDC_BTN_READTARGET              1052
 #define IDC_BTN_READTARGETSTRUCTURE     1052
@@ -94,13 +93,14 @@
 #define ID_HAND                         32782
 #define ID_EDIT_COPY32783               32783
 #define ID_EDIT_PASTE32784              32784
+#define ID_EDIT_COPYIMAGE               32792
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        207
-#define _APS_NEXT_COMMAND_VALUE         32789
+#define _APS_NEXT_COMMAND_VALUE         32793
 #define _APS_NEXT_CONTROL_VALUE         1065
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
