@@ -257,3 +257,9 @@ LRESULT CMainFrame::OnEditPaste(WORD wNotifyCode, WORD wID, HWND hWndCtl)
 	m_pSettingDlg->PasteFromClipboard();
 	return 0;
 }
+
+LRESULT CMainFrame::OnEditCopyImage(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+	m_pCurView->CopyImage();
+	return 0;
+}

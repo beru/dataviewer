@@ -89,7 +89,9 @@ bool CDataView::isMouseClicked()
 
 CDataView::CDataView()
 	:
-	m_pImage(0)
+	m_pImage(0),
+	m_imgWidth(0),
+	m_imgHeight(0)
 {
 }
 
@@ -962,4 +964,42 @@ LRESULT CDataView::OnKeyDown(TCHAR vk, UINT cRepeat, UINT flags)
 		break;
 	}
 	return 0;
+}
+
+void CDataView::CopyImage()
+{
+	if (!m_imgWidth || !m_imgHeight) {
+		return;
+	}
+
+	if (!::OpenClipboard(NULL)) {
+		return;
+	}
+
+	HGLOBAL hGlobal = GlobalAlloc(GHND | GMEM_SHARE,
+            sizeof(BITMAPINFOHEADER) + m_imgWidth * m_imgHeight * sizeof(DWORD));
+
+	BITMAPINFOHEADER* pBmpInfoHeader = (BITMAPINFOHEADER *)GlobalLock(hGlobal);
+	ZeroMemory(pBmpInfoHeader, sizeof(BITMAPINFOHEADER));
+	pBmpInfoHeader->biSize = sizeof(BITMAPINFOHEADER);
+	pBmpInfoHeader->biWidth = m_imgWidth;
+	pBmpInfoHeader->biHeight = m_imgHeight;	// TopDown failed..
+	pBmpInfoHeader->biPlanes = 1;
+	pBmpInfoHeader->biBitCount = 32;
+	pBmpInfoHeader->biCompression = BI_RGB;
+
+	DWORD* pDst = (DWORD*) (pBmpInfoHeader + 1);
+	DWORD* pSrc = (DWORD*) m_pImage->GetPixelVoidPtr(0, m_imgHeight-1);
+	int srcLineStride = m_pImage->GetLineStride();
+	for (size_t y=0; y<m_imgHeight; ++y) {
+		memcpy(pDst, pSrc, m_imgWidth*4);
+		pDst += m_imgWidth;
+		OffsetPtr(pSrc, -srcLineStride);
+	}
+	
+	GlobalUnlock(hGlobal);
+
+	::EmptyClipboard();
+	::SetClipboardData(CF_DIB, hGlobal);
+	::CloseClipboard();
 }

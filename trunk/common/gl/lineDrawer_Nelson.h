@@ -71,7 +71,7 @@ private:
 		assert(2 <= slopeCorrectionTableSize);
 		assert(8 <= filterTableSize);
 		static const size_t filterTableOffset = (filterTableSize / 8) + (filterTableSize / 2);
-		const int lineOffset = pBuff_->GetLineOffset();
+		const int lineOffset = pBuff_->GetLineStride();
 		
 		NumericT ep_table[9];
 		size_t scount = 0;

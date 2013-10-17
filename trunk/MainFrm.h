@@ -56,6 +56,7 @@ public:
 		COMMAND_ID_HANDLER_EX(ID_ZOOM, OnZoom)
 		COMMAND_ID_HANDLER_EX(ID_EDIT_COPY, OnEditCopy)
 		COMMAND_ID_HANDLER_EX(ID_EDIT_PASTE, OnEditPaste)
+		COMMAND_ID_HANDLER_EX(ID_EDIT_COPYIMAGE, OnEditCopyImage)
 
 //		COMMAND_ID_HANDLER(ID_WINDOW_ARRANGE, OnWindowArrangeIcons)
 		CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)
@@ -85,4 +86,5 @@ public:
 	LRESULT OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 	LRESULT OnEditCopy(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 	LRESULT OnEditPaste(WORD wNotifyCode, WORD wID, HWND hWndCtl);
+	LRESULT OnEditCopyImage(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 };

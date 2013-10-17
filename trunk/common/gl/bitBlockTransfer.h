@@ -17,8 +17,8 @@ void BitBlockTransfer(
 	// TODO:
 	const Buffer2D<bool>::value_type* pSrc = src.GetPixelPtr(0, 0);
 	TargetColorT* pTarget = target.GetPixelPtr(0, 0);
-	int srcLineOffset = src.GetLineOffset();
-	int targetLineOffset = target.GetLineOffset();
+	int srcLineStride = src.GetLineStride();
+	int targetLineStride = target.GetLineStride();
 	
 	size_t srcWidth = src.GetWidth();
 	size_t srcHeight = src.GetHeight();
@@ -31,8 +31,8 @@ void BitBlockTransfer(
 			*pTarget2 = br.Pop() ? TargetColorT(OneMinusEpsilon(0.0)) : TargetColorT(0.0);
 			++pTarget2;
 		}
-		OffsetPtr(pSrc, srcLineOffset);
-		OffsetPtr(pTarget, targetLineOffset);
+		OffsetPtr(pSrc, srcLineStride);
+		OffsetPtr(pTarget, targetLineStride);
 	}
 }
 
@@ -95,8 +95,8 @@ void BitBlockTransfer(
 	
 	const SrcColorT* pSrc = src.GetPixelPtr(srcX, srcY);
 	TargetColorT* pTarget = target.GetPixelPtr(targetX, targetY);
-	int srcLineOffset = src.GetLineOffset();
-	int targetLineOffset = target.GetLineOffset();
+	int srcLineStride = src.GetLineStride();
+	int targetLineStride = target.GetLineStride();
 	
 	const SrcColorT* pSrc2;
 	TargetColorT* pTarget2;
@@ -109,8 +109,8 @@ void BitBlockTransfer(
 //			++pSrc2;
 			++pTarget2;
 		}
-		OffsetPtr(pSrc, srcLineOffset);
-		OffsetPtr(pTarget, targetLineOffset);
+		OffsetPtr(pSrc, srcLineStride);
+		OffsetPtr(pTarget, targetLineStride);
 	}
 
 }
@@ -135,7 +135,7 @@ void StretchBitBlockTransfer(
 		ya, yb);
 	
 	char* pTargetLine_Char = (char*) target.GetPixelPtr(targetRect.x, targetRect.y);
-	int targetLineBytes = target.GetLineOffset();
+	int targetLineStride = target.GetLineStride();
 	double startX = targetRect.x;
 	double startY = targetRect.y;
 	double curY = startY;
@@ -149,7 +149,7 @@ void StretchBitBlockTransfer(
 			*pTarget = converter(*pSample);
 			++pTarget;
 		}
-		pTargetLine_Char += targetLineBytes;
+		pTargetLine_Char += targetLineStride;
 		++curY;
 	}
 	

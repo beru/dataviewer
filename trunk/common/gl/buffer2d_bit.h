@@ -14,7 +14,7 @@ public:
 private:
 	size_t width_;			//!< 描画領域の横幅
 	size_t height_;			//!< 描画領域の縦幅
-	int lineOffset_;		//!< Y座標を1つ上げるのに必要なバイト数。
+	int lineStride_;		//!< Y座標を1つ上げるのに必要なバイト数。
 
 	value_type* pBuff_;			//!< 描画領域の先頭座標を指す
 	
@@ -29,7 +29,7 @@ private:
 		assert(x+1 <= width_);
 		assert(y+1 <= height_);
 		assert((x % VALUE_BITS) == 0);
-		return lineOffset_*y + x / VALUE_BITS;
+		return lineStride_*y + x / VALUE_BITS;
 	}
 	
 public:
@@ -37,7 +37,7 @@ public:
 	{
 		width_		= 0;
 		height_		= 0;
-		lineOffset_	= 0;
+		lineStride_	= 0;
 		pBuff_		= NULL;
 		allocated_	= false;
 	}
@@ -46,19 +46,19 @@ public:
 	{
 		width_		= width;
 		height_		= height;
-		lineOffset_	= (width / VALUE_BITS) * VALUE_BYTES;
+		lineStride_	= (width / VALUE_BITS) * VALUE_BYTES;
 		if (width % VALUE_BITS)
-			lineOffset_ += VALUE_BYTES;
-		pBuff_		= new value_type[lineOffset_ * height];
+			lineStride_ += VALUE_BYTES;
+		pBuff_		= new value_type[lineStride_ * height];
 		allocated_	= true;
 	}
 	
 	//! 内部で描画領域を確保しないで、外から渡ってきた座標を利用
-	Buffer2D(size_t width, int height, int lineOffset, void* pBuff)
+	Buffer2D(size_t width, int height, int lineStride, void* pBuff)
 	{
 		width_		= width;
 		height_		= height;
-		lineOffset_	= lineOffset;
+		lineStride_	= lineStride;
 		pBuff_		= (value_type*) pBuff;
 		allocated_	= false;
 	}
@@ -73,7 +73,7 @@ public:
 
 	size_t	GetWidth() const								{	return width_;						}
 	size_t	GetHeight() const								{	return height_;						}
-	int		GetLineOffset() const 							{	return lineOffset_;					}
+	int		GetLineStride() const 							{	return lineStride_;					}
 	
 	__forceinline value_type*	GetPixelPtr(size_t x, size_t y)
 	{

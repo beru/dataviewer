@@ -194,8 +194,6 @@ BEGIN
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
     VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
     "0",            ID_VIEW_ZOOMRESET,      VIRTKEY, CONTROL, NOINVERT
 END
 
@@ -278,8 +276,9 @@ BEGIN
     END
     POPUP "&Edit"
     BEGIN
-        MENUITEM "&Copy",                       ID_EDIT_COPY, INACTIVE
-        MENUITEM "&Paste",                      ID_EDIT_PASTE, INACTIVE
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Paste",                      ID_EDIT_PASTE
+        MENUITEM "Copy &Image To Clipboard",    ID_EDIT_COPYIMAGE
     END
     POPUP "&View"
     BEGIN
