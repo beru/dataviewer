@@ -127,6 +127,7 @@ LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 	CChildFrame* pChild = new CChildFrame(this);
 	pChild->CreateEx(m_hWndMDIClient);
 
+	UIEnable(ID_EDIT_COPY, TRUE);
 	// TODO: add code to initialize document
 
 	return 0;
@@ -249,6 +250,9 @@ LRESULT CMainFrame::OnZoom(WORD wNotifyCode, WORD wID, HWND hWndCtl)
 LRESULT CMainFrame::OnEditCopy(WORD wNotifyCode, WORD wID, HWND hWndCtl)
 {
 	m_pSettingDlg->CopyToClipboard();
+
+	UIEnable(ID_EDIT_PASTE, TRUE);
+
 	return 0;
 }
 

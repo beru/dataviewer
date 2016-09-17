@@ -309,11 +309,11 @@ void CSettingDialog::CopyToClipboard()
 	HGLOBAL hG = GlobalAlloc(GHND, sizeof(ProcessSetting) + sizeof(DataSetting2D));
 	uint8_t* mem = (uint8_t*) GlobalLock(hG);
 
-	//boost::shared_ptr<SourceSetting> pSourceSetting;
-	//boost::shared_ptr<IDataSetting> pDataSetting;
-	//RetrieveSetting(pSourceSetting, pDataSetting);
-	//memcpy(mem, pSourceSetting.get(), sizeof(processSetting));
-	//memcpy(mem+sizeof(processSetting), pDataSetting.get(), sizeof(DataSetting2D));
+	boost::shared_ptr<SourceSetting> pSourceSetting;
+	boost::shared_ptr<IDataSetting> pDataSetting;
+	RetrieveSetting(pSourceSetting, pDataSetting);
+	memcpy(mem, pSourceSetting.get(), sizeof(ProcessSetting));
+	memcpy(mem+sizeof(ProcessSetting), pDataSetting.get(), sizeof(DataSetting2D));
 
 	GlobalUnlock(mem);
 	SetClipboardData(clipBoardFormat_, hG);
@@ -331,7 +331,7 @@ void CSettingDialog::PasteFromClipboard()
 		return;
 	}
 	const uint8_t* mem = (const uint8_t*) GlobalLock(hClip);
-	//SetSetting(*(const ProcessSetting*)mem, (const IDataSetting*)(mem+sizeof(ProcessSetting)));
+	SetSetting((const SourceSetting*)mem, (const IDataSetting*)(mem+sizeof(ProcessSetting)));
 	GlobalUnlock(hClip);
 	CloseClipboard();
 }
