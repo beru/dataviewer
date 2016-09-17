@@ -14,14 +14,13 @@ size_t AddressHexStrToNum(const CString& str)
 	return _tcstoul(str, &endPtr, 16);
 }
 
-static mu::Parser parser;
 double EvalFormula(LPCTSTR formula)
 {
+    mu::Parser parser;
 	if (_tcslen(formula) == 0)
-		parser.SetExpr("0");
+		parser.SetExpr(L"0");
 	else {
-		std::string s = ConvertToMString(formula);
-		parser.SetExpr(s.c_str());
+		parser.SetExpr(formula);
 	}
 	try {
 		return parser.Eval();
