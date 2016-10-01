@@ -17,7 +17,7 @@ void CChildFrame::OnFinalMessage(HWND /*hWnd*/)
 
 LRESULT CChildFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
-	m_pView = boost::shared_ptr<CDataView>(new CDataView);
+	m_pView = std::shared_ptr<CDataView>(new CDataView);
 	m_hWndClient = m_pView->Create(m_hWnd, rcDefault, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
 
 	// Load the child window icon

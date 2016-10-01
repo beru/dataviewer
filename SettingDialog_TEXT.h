@@ -19,7 +19,7 @@ public:
 	
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-	void RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting);
+	void RetrieveSetting(std::shared_ptr<IDataSetting>& pSetting);
 	void SetSetting(const DataSettingTEXT& setting);
 	
     BEGIN_MSG_MAP(CSettingDialog_TEXT)

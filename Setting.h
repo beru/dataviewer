@@ -1,5 +1,7 @@
 #pragma once
 
+#include <typeinfo>
+
 #pragma pack(push,1)
 
 struct SourceSetting

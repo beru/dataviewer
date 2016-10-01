@@ -53,11 +53,11 @@ LRESULT CSettingDialog::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	rec.right = rec.left + sz.cx * 0.95;
 	rec.bottom = rec.top + sz.cy * 0.14;
 
-	m_pDlgProcess = boost::shared_ptr<CSettingDialog_Process>(new CSettingDialog_Process);
+	m_pDlgProcess = std::shared_ptr<CSettingDialog_Process>(new CSettingDialog_Process);
 	m_pDlgProcess->Create(m_hWnd);
 	m_pDlgProcess->MoveWindow(rec);
 
-	m_pDlgFile = boost::shared_ptr<CSettingDialog_File>(new CSettingDialog_File);
+	m_pDlgFile = std::shared_ptr<CSettingDialog_File>(new CSettingDialog_File);
 	m_pDlgFile->Create(m_hWnd);
 	m_pDlgFile->MoveWindow(rec);
 
@@ -65,15 +65,15 @@ LRESULT CSettingDialog::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	m_wndTab.ClientToScreen(rec);
 	rec.right = rec.left + sz.cx * 0.95;
 	rec.bottom = rec.top + sz.cy * 0.5;
-	m_pDlg1D = boost::shared_ptr<CSettingDialog_1D>(new CSettingDialog_1D);
+	m_pDlg1D = std::shared_ptr<CSettingDialog_1D>(new CSettingDialog_1D);
 	m_pDlg1D->Create(m_hWnd);
 	m_pDlg1D->MoveWindow(rec);
 
-	m_pDlg2D = boost::shared_ptr<CSettingDialog_2D>(new CSettingDialog_2D);
+	m_pDlg2D = std::shared_ptr<CSettingDialog_2D>(new CSettingDialog_2D);
 	m_pDlg2D->Create(m_hWnd);
 	m_pDlg2D->MoveWindow(rec);
 
-	m_pDlgTEXT = boost::shared_ptr<CSettingDialog_TEXT>(new CSettingDialog_TEXT);
+	m_pDlgTEXT = std::shared_ptr<CSettingDialog_TEXT>(new CSettingDialog_TEXT);
 	m_pDlgTEXT->Create(m_hWnd);
 	m_pDlgTEXT->MoveWindow(rec);
 	
@@ -197,19 +197,19 @@ void CSettingDialog::OnSelTab(size_t idx)
 }
 
 void CSettingDialog::RetrieveSetting(
-	boost::shared_ptr<SourceSetting>& pSrcSetting,
-	boost::shared_ptr<IDataSetting>& pDataSetting)
+	std::shared_ptr<SourceSetting>& pSrcSetting,
+	std::shared_ptr<IDataSetting>& pDataSetting)
 {
 	try {
 		CString str;
 		if (m_pDlgProcess->IsWindowVisible()) {
 			ProcessSetting* p = new ProcessSetting();
 			m_pDlgProcess->GetSetting(*p);
-			pSrcSetting = boost::shared_ptr<SourceSetting>(p);
+			pSrcSetting = std::shared_ptr<SourceSetting>(p);
 		}else if (m_pDlgFile->IsWindowVisible()) {
 			FileSetting* p = new FileSetting();
 			m_pDlgFile->GetSetting(*p);
-			pSrcSetting = boost::shared_ptr<SourceSetting>(p);
+			pSrcSetting = std::shared_ptr<SourceSetting>(p);
 		}
 		SourceSetting& setting = *pSrcSetting;
 		GetDlgItemText(IDC_EDT_ADDRESS_BASE, setting.addressBaseFormula, Count(setting.addressBaseFormula));
@@ -283,8 +283,8 @@ LRESULT CSettingDialog::OnBnClickedBtnProcess(WORD /*wNotifyCode*/, WORD /*wID*/
 void CSettingDialog::ReadData()
 {
 	if (m_readDelegate) {
-		boost::shared_ptr<SourceSetting> pSrcSetting;
-		boost::shared_ptr<IDataSetting> pDataSetting;
+		std::shared_ptr<SourceSetting> pSrcSetting;
+		std::shared_ptr<IDataSetting> pDataSetting;
 		RetrieveSetting(pSrcSetting, pDataSetting);
 		m_readDelegate(pSrcSetting, pDataSetting);
 	}
@@ -293,8 +293,8 @@ void CSettingDialog::ReadData()
 void CSettingDialog::ProcessData()
 {
 	if (m_processDelegate) {
-		boost::shared_ptr<SourceSetting> pSrcSetting;
-		boost::shared_ptr<IDataSetting> pDataSetting;
+		std::shared_ptr<SourceSetting> pSrcSetting;
+		std::shared_ptr<IDataSetting> pDataSetting;
 		RetrieveSetting(pSrcSetting, pDataSetting);
 		m_processDelegate(pSrcSetting, pDataSetting);
 	}
@@ -309,8 +309,8 @@ void CSettingDialog::CopyToClipboard()
 	HGLOBAL hG = GlobalAlloc(GHND, sizeof(ProcessSetting) + sizeof(DataSetting2D));
 	uint8_t* mem = (uint8_t*) GlobalLock(hG);
 
-	boost::shared_ptr<SourceSetting> pSourceSetting;
-	boost::shared_ptr<IDataSetting> pDataSetting;
+	std::shared_ptr<SourceSetting> pSourceSetting;
+	std::shared_ptr<IDataSetting> pDataSetting;
 	RetrieveSetting(pSourceSetting, pDataSetting);
 	memcpy(mem, pSourceSetting.get(), sizeof(ProcessSetting));
 	memcpy(mem+sizeof(ProcessSetting), pDataSetting.get(), sizeof(DataSetting2D));

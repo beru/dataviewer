@@ -78,11 +78,11 @@ void CSettingDialog_1D::RetreiveSetting(DataSetting1D& setting)
 	
 }
 
-void CSettingDialog_1D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
+void CSettingDialog_1D::RetrieveSetting(std::shared_ptr<IDataSetting>& pSetting)
 {
 	DataSetting1D* p = new DataSetting1D();
 	RetreiveSetting(*p);
-	pSetting = boost::shared_ptr<DataSetting1D>(p);
+	pSetting = std::shared_ptr<DataSetting1D>(p);
 }
 
 LRESULT CSettingDialog_1D::OnBnClickedChkViewauto(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

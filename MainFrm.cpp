@@ -54,7 +54,7 @@ HWND CMainFrame::CreateClient()
 	m_painContainer.SetPaneContainerExtendedStyle(PANECNT_NOCLOSEBUTTON);
 	
 	// Create the Setting dialog in the left pane
-	m_pSettingDlg = boost::shared_ptr<CSettingDialog>(new CSettingDialog);
+	m_pSettingDlg = std::shared_ptr<CSettingDialog>(new CSettingDialog);
 	m_pSettingDlg->Create(m_painContainer);
 	m_pSettingDlg->m_readDelegate.bind(this, &CMainFrame::ReadData);
 	m_pSettingDlg->m_processDelegate.bind(this, &CMainFrame::ProcessData);
@@ -206,8 +206,8 @@ void CMainFrame::SetSettingView(
 }
 
 void CMainFrame::ReadData(
-	const boost::shared_ptr<SourceSetting>& pSrcSetting,
-	boost::shared_ptr<IDataSetting>& pDataSetting)
+	const std::shared_ptr<SourceSetting>& pSrcSetting,
+	std::shared_ptr<IDataSetting>& pDataSetting)
 {
 	if (!m_pCurView)
 		return;
@@ -217,8 +217,8 @@ void CMainFrame::ReadData(
 }
 
 void CMainFrame::ProcessData(
-	const boost::shared_ptr<SourceSetting>& pSrcSetting,
-	boost::shared_ptr<IDataSetting>& pDataSetting)
+	const std::shared_ptr<SourceSetting>& pSrcSetting,
+	std::shared_ptr<IDataSetting>& pDataSetting)
 {
 	if (!m_pCurView)
 		return;

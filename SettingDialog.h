@@ -51,23 +51,23 @@ private:
 
 public:
 	void SetSetting(const SourceSetting* pSrcSetting, const IDataSetting* pDataSetting);
-	void RetrieveSetting(boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void RetrieveSetting(std::shared_ptr<SourceSetting>& pSrcSetting, std::shared_ptr<IDataSetting>& pDataSetting);
 
-	fastdelegate::FastDelegate2<const boost::shared_ptr<SourceSetting>&, boost::shared_ptr<IDataSetting>& > m_readDelegate;
-	fastdelegate::FastDelegate2<const boost::shared_ptr<SourceSetting>&, boost::shared_ptr<IDataSetting>& > m_processDelegate;
+	fastdelegate::FastDelegate2<const std::shared_ptr<SourceSetting>&, std::shared_ptr<IDataSetting>& > m_readDelegate;
+	fastdelegate::FastDelegate2<const std::shared_ptr<SourceSetting>&, std::shared_ptr<IDataSetting>& > m_processDelegate;
 	
 	void CopyToClipboard();
 	void PasteFromClipboard();
 	
 private:
 	CTabCtrl m_wndTabSrc;
-	boost::shared_ptr<class CSettingDialog_Process> m_pDlgProcess;
-	boost::shared_ptr<class CSettingDialog_File> m_pDlgFile;
+	std::shared_ptr<class CSettingDialog_Process> m_pDlgProcess;
+	std::shared_ptr<class CSettingDialog_File> m_pDlgFile;
 	
 	CTabCtrl m_wndTab;
-	boost::shared_ptr<class CSettingDialog_1D> m_pDlg1D;
-	boost::shared_ptr<class CSettingDialog_2D> m_pDlg2D;
-	boost::shared_ptr<class CSettingDialog_TEXT> m_pDlgTEXT;
+	std::shared_ptr<class CSettingDialog_1D> m_pDlg1D;
+	std::shared_ptr<class CSettingDialog_2D> m_pDlg2D;
+	std::shared_ptr<class CSettingDialog_TEXT> m_pDlgTEXT;
 	
 	void ReadData();
 	void ProcessData();

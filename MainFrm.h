@@ -18,13 +18,13 @@ public:
 	CMDICommandBarCtrl m_CmdBar;
 	CSplitterWindow m_splitter;
 	CPaneContainer m_painContainer;
-	boost::shared_ptr<class CSettingDialog> m_pSettingDlg;
+	std::shared_ptr<class CSettingDialog> m_pSettingDlg;
 	class CDataView* m_pCurView;
 	
 	HWND CreateClient();
 
-	void ReadData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
-	void ProcessData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ReadData(const std::shared_ptr<SourceSetting>& pSrcSetting, std::shared_ptr<IDataSetting>& pDataSetting);
+	void ProcessData(const std::shared_ptr<SourceSetting>& pSrcSetting, std::shared_ptr<IDataSetting>& pDataSetting);
 	void SetSettingView(const SourceSetting* pSrcSetting, const IDataSetting* pDataSetting);
 	void updateUI();
 	

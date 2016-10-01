@@ -2,6 +2,7 @@
 #include "winutil.h"
 
 #include <Windowsx.h>
+#include <assert.h>
 
 // http://www.alpha-net.ne.jp/users2/uk413/vc/VCT_Clip.html
 bool SetClipboardText(const wchar_t* str, size_t len)

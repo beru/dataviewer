@@ -13,9 +13,7 @@
 
 #include "xs_Float.h"
 
-#include <boost/static_assert.hpp>
-#include <boost/integer_traits.hpp>
-
+#include <type_traits>
 
 namespace gl
 {
@@ -106,7 +104,7 @@ public:
 
 	fixed(double v)
 		:
-	value( std::min<double>(v * (1i64 << shifts), boost::integer_traits<T>::const_max) )
+	value( std::min<double>(v * (1i64 << shifts), std::numeric_limits<T>::max()) )
 //		value( xs_Fix<shifts>::ToFix(v) )
 	{
 	}

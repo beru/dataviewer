@@ -40,7 +40,7 @@ extern CAppModule _Module;
 
 #include <Psapi.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 #include <list>
 #include <map>

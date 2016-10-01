@@ -42,10 +42,10 @@ void CSettingDialog_TEXT::RetreiveSetting(DataSettingTEXT& setting)
 	
 }
 
-void CSettingDialog_TEXT::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
+void CSettingDialog_TEXT::RetrieveSetting(std::shared_ptr<IDataSetting>& pSetting)
 {
 	DataSettingTEXT* ps = new DataSettingTEXT();
 	RetreiveSetting(*ps);
-	pSetting = boost::shared_ptr<DataSettingTEXT>(ps);
+	pSetting = std::shared_ptr<DataSettingTEXT>(ps);
 }
 

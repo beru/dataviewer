@@ -16,7 +16,7 @@ public:
 	}
 
 	class CMainFrame* m_pMainFrame;
-	boost::shared_ptr<class CDataView> m_pView;
+	std::shared_ptr<class CDataView> m_pView;
 
 	HWND GetMainFrame() { return ::GetParent(GetMDIFrame()); }
 

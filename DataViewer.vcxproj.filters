@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{e86e7c04-0b57-4e06-b7fe-d1ef2f66a9be}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{46ca97e3-6d7a-40de-b891-754da71d41e5}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{f308356a-e5a8-4994-8e08-c13079c04db4}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{2150d2ee-f2e4-47b3-95ca-25ab1628ab7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\gl">
+      <UniqueIdentifier>{bc2251ce-5a05-44c4-8312-1cdbda52c70b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\muParser">
+      <UniqueIdentifier>{20fa0120-5397-4960-a5c7-1a93c48241d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataViewerCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Setting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog_1D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog_2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog_File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog_Process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingDialog_TEXT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\converter.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\IOUtility.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\MathUtil.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\PathUtility.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\SaveDIB.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\strutil.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\winutil.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\gl\windows.cpp">
+      <Filter>common\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParser.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParserBase.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParserBytecode.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParserCallback.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParserError.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParserInt.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\muParser\muParserTokenReader.cpp">
+      <Filter>common\muParser</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataViewerCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog_1D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog_2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog_File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog_Process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingDialog_TEXT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\arrayutil.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\AutoCombo.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\CommandEdit.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\converter.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\FastDelegate.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\FastDelegateBind.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\fastmath.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\IOUtility.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ISyncActiveImpl.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\MathUtil.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PathUtility.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\SaveDIB.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\strutil.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Timer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\winutil.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\xs_Config.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\xs_Float.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\bit_reader.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\bitBlockTransfer.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\buffer2d.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\buffer2d_bit.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\clipper.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\color.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\colorConverter.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\fixed.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\lineDrawer_Nelson.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\rect.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\vector2.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\gl\windows.h">
+      <Filter>common\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParser.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserBase.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserBytecode.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserCallback.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserDef.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserError.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserFixes.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserInt.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserStack.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserToken.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+    <ClInclude Include="common\muParser\muParserTokenReader.h">
+      <Filter>common\muParser</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\DataViewer.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\MemoryViewerDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DataViewer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

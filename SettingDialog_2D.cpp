@@ -79,10 +79,10 @@ ColorFormatType CSettingDialog_2D::getColorFormat()
 	return colorFormatTypeMapper[str];
 }
 
-void CSettingDialog_2D::RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting)
+void CSettingDialog_2D::RetrieveSetting(std::shared_ptr<IDataSetting>& pSetting)
 {
 	DataSetting2D* ps = new DataSetting2D;
-	pSetting = boost::shared_ptr<DataSetting2D>(ps);
+	pSetting = std::shared_ptr<DataSetting2D>(ps);
 
 	CString str;
 	m_wndEdtWidth.GetWindowText(ps->widthFormula, Count(ps->widthFormula));

@@ -123,8 +123,8 @@ LRESULT CDataView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	gl::SetupSlopeCorrectionTable(g_slopeCorrTable, SLOPE_CORR_TABLE_SIZE);
 	gl::SetupFilterTable(g_filterTable, FILTER_TABLE_SIZE, 0.75);
 	
-	m_pSrcSetting = boost::shared_ptr<ProcessSetting>(new ProcessSetting);
-	m_pDataSetting = boost::shared_ptr<DataSetting1D>(new DataSetting1D);
+	m_pSrcSetting = std::shared_ptr<ProcessSetting>(new ProcessSetting);
+	m_pDataSetting = std::shared_ptr<DataSetting1D>(new DataSetting1D);
 	m_scale = 1.0;
 
 	return 0;
@@ -579,7 +579,7 @@ bool fetchProcessData(
 
 static
 bool fetchData(
-	const boost::shared_ptr<SourceSetting>& pSrcSetting,
+	const std::shared_ptr<SourceSetting>& pSrcSetting,
 	size_t dataLength,
 	std::vector<char>& data
    )
@@ -617,8 +617,8 @@ bool fetchData(
 }
 
 void CDataView::ReadData(
-	const boost::shared_ptr<SourceSetting>& pSrcSetting,
-	boost::shared_ptr<IDataSetting>& pDataSetting)
+	const std::shared_ptr<SourceSetting>& pSrcSetting,
+	std::shared_ptr<IDataSetting>& pDataSetting)
 {
 	m_pSrcSetting = pSrcSetting;
 	m_pDataSetting = pDataSetting;
@@ -636,8 +636,8 @@ void CDataView::ReadData(
 }
 
 void CDataView::ProcessData(
-	const boost::shared_ptr<SourceSetting>& pSrcSetting,
-	boost::shared_ptr<IDataSetting>& pDataSetting)
+	const std::shared_ptr<SourceSetting>& pSrcSetting,
+	std::shared_ptr<IDataSetting>& pDataSetting)
 {
 	m_pSrcSetting = pSrcSetting;
 	m_pDataSetting = pDataSetting;

@@ -25,8 +25,8 @@ public:
 	const IDataSetting* GetDataSetting() {
 		return m_pDataSetting.get();
 	}
-	void ReadData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
-	void ProcessData(const boost::shared_ptr<SourceSetting>& pSrcSetting, boost::shared_ptr<IDataSetting>& pDataSetting);
+	void ReadData(const std::shared_ptr<SourceSetting>& pSrcSetting, std::shared_ptr<IDataSetting>& pDataSetting);
+	void ProcessData(const std::shared_ptr<SourceSetting>& pSrcSetting, std::shared_ptr<IDataSetting>& pDataSetting);
 	
 	void ZoomIn();
 	void ZoomOut();
@@ -53,8 +53,8 @@ public:
 	END_MSG_MAP()
 	
 private:
-	boost::shared_ptr<SourceSetting> m_pSrcSetting;
-	boost::shared_ptr<IDataSetting> m_pDataSetting;
+	std::shared_ptr<SourceSetting> m_pSrcSetting;
+	std::shared_ptr<IDataSetting> m_pDataSetting;
 	std::vector<char> m_data;
 	std::vector<double> m_values;
 	

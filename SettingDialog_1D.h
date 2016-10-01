@@ -18,7 +18,7 @@ public:
 	enum { IDD = IDD_DLG_1D };
 	
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	void RetrieveSetting(boost::shared_ptr<IDataSetting>& pSetting);
+	void RetrieveSetting(std::shared_ptr<IDataSetting>& pSetting);
 	void SetSetting(const DataSetting1D& setting);
 	
     BEGIN_MSG_MAP(CSettingDialog_1D)
