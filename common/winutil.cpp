@@ -184,6 +184,7 @@ SIZE GetDialogSize(INT nResourceId, HWND hWnd)
 
 	HGLOBAL hTemplate = ::LoadResource(hModule, hRsrc);
 
+	typedef ATL::_DialogSplitHelper::DLGTEMPLATEEX DLGTEMPLATEEX;
 	DLGTEMPLATEEX* pTemplate = (DLGTEMPLATEEX*)::LockResource(hTemplate);
 
 	// the approximate method of calculating

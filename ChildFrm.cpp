@@ -67,3 +67,9 @@ LRESULT CChildFrame::OnMDIActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	bHandled = FALSE;
 	return 1;
 }
+
+LRESULT CChildFrame::OnSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	return 1;
+}
+
