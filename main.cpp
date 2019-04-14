@@ -11,11 +11,13 @@ CAppModule _Module;
 
 int Run(LPTSTR /*lpstrCmdLine*/ = NULL, int nCmdShow = SW_SHOWDEFAULT)
 {
+	::SetProcessDPIAware();
+
 	CMessageLoop theLoop;
 	_Module.AddMessageLoop(&theLoop);
 
 	CMainFrame wndMain;
-	CRect rec(0,0, 1024,768);
+	CRect rec(0,0, 1024, 768);
 	if(wndMain.CreateEx(NULL,rec) == NULL)
 	{
 		ATLTRACE(_T("Main window creation failed!\n"));

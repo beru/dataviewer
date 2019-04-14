@@ -6,6 +6,7 @@
 #define IDD_ABOUTBOX                    100
 #define IDR_MAINFRAME                   128
 #define IDR_MDICHILD                    129
+#define IDR_MAINFRAME64                 129
 #define IDD_DLG_SETTING                 201
 #define IDD_DLG_1D                      202
 #define IDD_DLG_2D                      203
