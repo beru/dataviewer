@@ -68,8 +68,16 @@ LRESULT CChildFrame::OnMDIActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	return 1;
 }
 
-LRESULT CChildFrame::OnSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CChildFrame::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
-	return 1;
+	if(wParam != SIZE_MAXIMIZED)
+	{
+  	this->DefWindowProc(uMsg, wParam, lParam);   // needed for MDI children
+  }
+	if(wParam != SIZE_MINIMIZED)
+	{
+		__super::UpdateLayout();
+	}
+	return 0;
 }
 
