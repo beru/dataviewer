@@ -44,6 +44,7 @@ extern CAppModule _Module;
 #include <vector>
 #include <list>
 #include <map>
+#include <typeinfo>
 
 #include "fastdelegate.h"
 #include "PathUtility.h"

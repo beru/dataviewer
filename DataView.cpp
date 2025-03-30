@@ -61,7 +61,6 @@ ColorB8G8R8A8 convert(double from)
 
 #include "MathUtil.h"
 
-#include <typeinfo.h>
 #include "DataReader.h"
 
 #include "DataViewerCommon.h"

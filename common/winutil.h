@@ -35,3 +35,5 @@ bool ComboBox_GetSelectedItemString(HWND hWnd, CString& value);
 LRESULT ComboBox_GetSelectedItemData(HWND hWnd);
 
 SIZE GetDialogSize(INT nResourceId, HWND hWnd);
+
+std::basic_string<TCHAR> GetErrorMessage(DWORD id);

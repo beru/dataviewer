@@ -3,6 +3,7 @@
 
 #include "muParser/muParser.h"
 #include "converter.h"
+#include "winutil.h"
 
 size_t AddressHexStrToNum(const CString& str)
 {
@@ -11,7 +12,7 @@ size_t AddressHexStrToNum(const CString& str)
 		wrk = str.Right(str.GetLength() - 2);
 	}
 	TCHAR* endPtr;
-	return _tcstoul(str, &endPtr, 16);
+	return _tcstoull(str, &endPtr, 16);
 }
 
 double EvalFormula(LPCTSTR formula)
@@ -33,8 +34,20 @@ bool ReadProcessData(HANDLE hProcess, LPCVOID pTarget, void* buffer, size_t fetc
 {
 	if (hProcess == NULL)
 		return false;
+	DWORD oldProtect;
+	BOOL ret = FALSE;
+	ret = ::VirtualProtectEx(hProcess, (LPVOID)pTarget, fetchSize, PAGE_READONLY, &oldProtect);
+	if (!ret)
+	{
+		::OutputDebugString(GetErrorMessage(::GetLastError()).c_str());
+	}
 	SIZE_T nBytesRead;
-	BOOL ret = ReadProcessMemory(hProcess, pTarget, buffer, fetchSize, &nBytesRead);
+	ret = ReadProcessMemory(hProcess, pTarget, buffer, fetchSize, &nBytesRead);
+	if (!ret)
+	{
+		::OutputDebugString(GetErrorMessage(::GetLastError()).c_str());
+	}
+	::VirtualProtectEx(hProcess, (LPVOID)pTarget, fetchSize, oldProtect, NULL);
 	CloseHandle(hProcess);
 	return ret != FALSE;
 }
@@ -48,7 +61,7 @@ HANDLE OpenProcessHandleByName(LPCTSTR name)
 	size_t cnt = bytesReturned / sizeof(DWORD);
 
 	for (size_t i=0; i<cnt; ++i) {
-		HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processIDs[i]);
+		HANDLE hProcess = OpenProcess(PROCESS_VM_READ|PROCESS_VM_OPERATION, FALSE, processIDs[i]);
 		if (hProcess != NULL) {
 			HMODULE hModule;
 			DWORD cbNeeded;
@@ -75,7 +88,7 @@ bool ReadProcessData(LPCTSTR imageName, LPCVOID pTarget, void* buffer, size_t fe
 
 bool ReadProcessData(DWORD pid, LPCVOID pTarget, void* buffer, size_t fetchSize)
 {
-	return ReadProcessData(OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid), pTarget, buffer, fetchSize);
+	return ReadProcessData(OpenProcess(PROCESS_VM_READ|PROCESS_VM_OPERATION, FALSE, pid), pTarget, buffer, fetchSize);
 }
 
 

@@ -205,3 +205,23 @@ SIZE GetDialogSize(INT nResourceId, HWND hWnd)
 	return dlgSize;
 }
 
+std::basic_string<TCHAR> GetErrorMessage(DWORD id)
+{
+	std::basic_string<TCHAR> ret;
+	void* buffer = nullptr;
+	DWORD result = FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		id,
+		0,
+		(LPWSTR)&buffer,
+		0,
+		NULL
+	);
+	if (result > 0 && buffer != nullptr) {
+		ret = reinterpret_cast<TCHAR*>(buffer);
+		LocalFree(buffer);
+	}
+	return ret;
+}
+
